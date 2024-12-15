@@ -1,0 +1,89 @@
+*{
+    font-family: 'verdana';
+    margin: 0cm;
+}
+body{
+    background-color: #090e25;
+    color: #f8fcf8;
+}
+header{
+    margin-bottom: 4vh;
+}
+body{
+    margin-left: 1vw;
+}
+h2, h3{
+    margin: 20px;
+    text-decoration: none;
+}
+.main{
+    text-align: center;
+    font-size: 7.5vw;
+    margin-bottom: 3vh;
+}
+a{
+    text-decoration: none;
+    color: #f8fcf8;
+    font-size: 1.5vw;
+    font-weight: bold;
+}
+.links{
+    display: flex;
+    justify-content: space-evenly;
+}
+#Answer{
+    color: rgba(0, 0, 0, 0);
+    display: inline-block;
+    background-color: #040818;
+}
+#Answer:hover{
+    color: #f8fcf8;
+    background-color: #04081800;
+}
+input{
+    text-align: center;
+    border-radius: 25px;
+    outline: none;
+    border: 1px solid #f8fcf8;
+    font-family: 'verdana';
+    font-weight: bold;
+    color: #f8fcf8;
+    background-color: #090e25;
+}
+body{
+    margin: 0px;
+}
+
+.grids {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 3 equal columns */
+    gap: 0; /* No space between items */
+    height: 100vh; /* Take full viewport height */
+}
+.tit{
+    grid-column: span 2;
+}
+.grids > * {
+    border: 2px solid #313a5c;
+    color: white;
+    text-align: center;
+    line-height: 1.5;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Center text in the grid item */
+    text-decoration: none; /* Remove underline */
+    font-size: 200%;
+}
+.grids > *:hover{
+    background-color: #131b3f;
+}
+
+.grids > *:last-child:nth-child(4n - 0) {
+    grid-column: span 4;
+}
+.grids > *:last-child:nth-child(4n - 3) {
+    grid-column: span 3;
+}
+.grids > *:last-child:nth-child(4n - 2) {
+    grid-column: span 2;
+}

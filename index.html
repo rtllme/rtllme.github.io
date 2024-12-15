@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="main.css">
+    <script src="test.js"></script>
+</head>
+<body>
+    <div class="grids">
+        <a href="#" class="tit">HIRAGANA</a>
+        <a href="sth.html">SOUND TO HIRAGANA</a>
+        <a href="checkbox.html">HIRAGANA TEST</a>
+        <a href="random.html">RANDOM HIRAGANA</a>
+        <a href="wordRandom.html">RANDOM WORD</a>
+        <a href="younes.html">NEW NEW NEW</a>
+    </div>
+</body>
+<style>
+    body{
+    margin: 0px;
+}
+
+.grids {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 3 equal columns */
+    gap: 0; /* No space between items */
+    height: 100vh; /* Take full viewport height */
+}
+.tit{
+    grid-column: span 2;
+}
+.grids > * {
+    border: 2px solid #313a5c;
+    color: white;
+    text-align: center;
+    line-height: 1.5;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Center text in the grid item */
+    text-decoration: none; /* Remove underline */
+    font-size: 200%;
+}
+.grids > *:hover{
+    background-color: #131b3f;
+}
+
+.grids > *:last-child:nth-child(4n - 0) {
+    grid-column: span 4;
+}
+.grids > *:last-child:nth-child(4n - 3) {
+  grid-column: span 3;
+}
+.grids > *:last-child:nth-child(4n - 2) {
+  grid-column: span 2;
+}
+</style>
+</html>
