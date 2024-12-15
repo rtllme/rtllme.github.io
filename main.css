@@ -1,52 +1,58 @@
+body{
+    background-color: #0a060a;
+    font-family: "Oswald", sans-serif;
+    color: #f3eaf1;
+    text-align: center;
+}
+
 *{
-    font-family: 'verdana';
-    margin: 0cm;
-}
-body{
-    background-color: #090e25;
-    color: #f8fcf8;
-}
-header{
-    margin-bottom: 4vh;
-}
-body{
-    margin-left: 1vw;
-}
-h2, h3{
-    margin: 20px;
-    text-decoration: none;
+    margin: 0px;
+    padding: 0px;
 }
 .main{
-    text-align: center;
-    font-size: 7.5vw;
-    margin-bottom: 3vh;
+    font-size: 11vw;
+    padding-bottom: 2.5vh;
 }
+
 a{
+    color: #f3eaf1;
     text-decoration: none;
-    color: #f8fcf8;
-    font-size: 1.5vw;
-    font-weight: bold;
 }
-.links{
-    display: flex;
-    justify-content: space-evenly;
-}
-#Answer{
-    color: rgba(0, 0, 0, 0);
-    display: inline-block;
-    background-color: #040818;
-}
-#Answer:hover{
-    color: #f8fcf8;
-    background-color: #04081800;
-}
+
 input{
-    text-align: center;
-    border-radius: 25px;
-    outline: none;
-    border: 1px solid #f8fcf8;
-    font-family: 'verdana';
+    font-family: "Oswald", sans-serif;
     font-weight: bold;
-    color: #f8fcf8;
-    background-color: #090e25;
+    color: #f3eaf1;
+    background-color: #0a020a;
+    border: 2px solid #653c44;
+    border-radius: 10px; 
+    text-align: center;
+    width: 50vw;
+    font-size: 200%;
+}
+
+button{
+    font-family: "Oswald", sans-serif;
+    font-weight: bold;
+    color: #f3eaf1;
+    background-color: #0a020a;
+    border: 2px solid #653c44;
+    border-radius: 10px; 
+    text-align: center;
+    padding: 5px;
+    width: 35vw;
+    font-size: 150%;
+}
+
+button:hover{
+    background-color: #1f071f;
+}
+
+.hide{
+    background-color: #0a020a;
+    color: #0a020a00;
+}
+.hide:hover{
+    background-color: #1f071f00;
+    color: #f3eaf1;
 }

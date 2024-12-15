@@ -129,20 +129,8 @@ function createPageContent() {
     const h1Header = document.createElement('h1');
     h1Header.textContent = 'HIRAGANA';
     h1Header.classList.add('main');
+    h1Header.onclick = () => { window.location.href = "index.html"; }; // Correct way to set onclick for navigation
     header.appendChild(h1Header);
-
-    // Create and append the links container
-    const linksDiv = document.createElement('div');
-    linksDiv.className = 'links';
-
-    // Add the individual links
-    const link1 = document.createElement('a');
-    link1.href = 'index.html';
-    link1.textContent = 'HOME';
-    linksDiv.appendChild(link1);
-
-    // Append the linksDiv to the header
-    header.appendChild(linksDiv);
 
     // Append the header to the body
     document.body.appendChild(header);
@@ -150,6 +138,7 @@ function createPageContent() {
     // Create and append the "Answer" placeholder
     const h1Answer = document.createElement('h1');
     h1Answer.id = 'Answer';
+    h1Answer.className = 'hide';
     document.body.appendChild(h1Answer);
 
     // Create and append the "Hiragana Test" placeholder
@@ -161,10 +150,11 @@ function createPageContent() {
     const startTestButton = document.createElement('button');
     startTestButton.textContent = 'Roll';
     startTestButton.onclick = function () {
-        hiraganaRandom();
+        hiraganaRandom();  // Assuming this function is defined elsewhere
     };
     document.body.appendChild(startTestButton);
 }
+
 
 
 // Function to get a random item from a list
