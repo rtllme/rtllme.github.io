@@ -5,17 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="grids.css">
     <script src="test.js"></script>
 </head>
-<header>
-    <h1 class="main" onclick='window.location.href = "index.html"'>HIRAGANA</h1>
-</header>
 <body>
-    <div class="bodyMain">
+    <div class="grids">
+        <h1 class="main" onclick='window.location.href = "index.html"'>HIRAGANA</h1>
         <input type="text" id="soundInput">
-        <br></br>
-        <button onclick="soundToHiragana()">show hiragana</button>
         <h1 id="hiraganaEqui">your hiragana</h1>
+        <button onclick="soundToHiragana()">show hiragana</button>
     </div>
 </body>
+<style>
+    .grids > *:last-child:nth-child(4n-2) {
+        grid-column: span 1;
+    }
+    .grids > *:last-child:nth-child(4n - 1) {
+        grid-column: span 4;
+    }
+    .grids > *:last-child:nth-child(4n) {
+        grid-column: span 3;
+    }
+    .main{
+        grid-column: span 3;
+    }
+</style>
 </html>
