@@ -56,3 +56,11 @@ button:hover{
     background-color: #1f071f00;
     color: #f3eaf1;
 }
+
+input[type="checkbox"] {
+    width: 25px;
+}
+
+br{
+    height: 0px;
+}
