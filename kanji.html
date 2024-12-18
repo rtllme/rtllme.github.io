@@ -5,20 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="main.css">
-    <script src="test.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+    <script src="test.js"></script>
 </head>
-<header>
-    <h1 class="main" onclick='window.location.href = "hiragana.html"'>HIRAGANA</h1>
-</header>
 <body>
-    <div class="bodyMain">
-        <h1 id="hiraganaT"></h1>
-        <br></br>
-        <button onclick="hiraganaRandom2()">RANDOM</button>
+    <div class="grids">
+        <a href="index.html" class="tit">KANJI</a>
+        <a href="randomKanji.html">RANDOM KANJI</a>
     </div>
-    
 </body>
+<style>
+    .grids {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr); 
+        height: 100vh;
+        width: 100vw;
+        align-items: center; 
+    }
+    .tit{
+        font-size: 40px;
+    }
+</style>
 </html>
