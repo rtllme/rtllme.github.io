@@ -48,7 +48,7 @@ const hiragana = {
         nu: "ぬ",
         ne: "ね",
         no: "の",
-        n: "ん"  // No tenten needed for 'n'
+        n: "ん"  // Nasal sound (no tenten)
     },
     h: {
         ha: "は",
@@ -60,9 +60,7 @@ const hiragana = {
         bi: "び", // Tenten version of 'hi'
         bu: "ぶ", // Tenten version of 'fu'
         be: "べ", // Tenten version of 'he'
-        bo: "ぼ"  // Tenten version of 'ho'
-    },
-    p: {
+        bo: "ぼ", // Tenten version of 'ho'
         pa: "ぱ", // Handakuten version of 'ha'
         pi: "ぴ", // Handakuten version of 'hi'
         pu: "ぷ", // Handakuten version of 'fu'
@@ -91,9 +89,6 @@ const hiragana = {
     w: {
         wa: "わ",
         wo: "を" // Particle
-    },
-    n2: {
-        n: "ん" // Nasal sound (no tenten)
     }
 };
 
