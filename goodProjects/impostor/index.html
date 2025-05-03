@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Word Impostor Game</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto', sans-serif;
+      background: repeating-linear-gradient(
+        45deg,
+        #f9f9f9,
+        #f9f9f9 10px,
+        #f1f1f1 10px,
+        #f1f1f1 20px
+      );
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-size: 24px;
+      margin-top: 20px;
+    }
+
+    h3 {
+      font-size: 20px;
+      margin-top: 15px;
+    }
+
+    .card {
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      margin: 10px 0;
+      font-size: 18px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin: 10px 0;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #43a047;
+    }
+
+    #gameArea {
+      display: none;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      padding: 10px;
+      background-color: #eeeeee;
+      border-radius: 6px;
+      margin: 5px 0;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Word Impostor<a href="../mainhub.html">!</a></h1>
+
+  <div class="card" id="menu">
+    <input id="playerName" placeholder="Your name" />
+    <button onclick="createRoom()">Create Room</button>
+    <input id="roomCodeInput" placeholder="Room code (e.g. ABCD)" maxlength="4" />
+    <button onclick="joinRoom()">Join Room</button>
+  </div>
+
+  <div class="card" id="gameArea">
+    <h2>Room Code: <span id="roomCodeDisplay"></span></h2>
+    <h3>Players in Room:</h3>
+    <ul id="playerList"></ul>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="test.js"></script>
+</body>
+</html>
