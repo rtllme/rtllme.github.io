@@ -38,9 +38,8 @@ window.onload = async function() {
         try {
             const snapshot = await database.ref('rooms/' + roomCode).once('value');
             const roomData = snapshot.val();
-
             // Check if the player is the host of the room
-            if (roomData.host === playerId) {
+            if (roomData.host === playerId && roomData.players[playerId].role === 'none') {
                 const wordPair = await fetchWordPair(); // Fetch the word pair for the game
                 assignRoles(wordPair); // Assign roles to players
             }
@@ -96,6 +95,61 @@ function assignRoles(wordPair) {
     });
     
 }
+function applyImpostorStyle() {
+    // Card styling
+    const card = document.querySelector('.card');
+    card.style.backgroundColor = '#1a0000';
+    card.style.color = '#ff1a1a';
+    card.style.boxShadow = '0 0 30px #ff0000';
+    card.style.border = '4px solid #ff1a1a';
+    card.style.transition = 'all 0.3s ease-in-out';
+  
+    // Apply background to BODY instead of HTML
+    document.body.style.background = `repeating-linear-gradient(
+      45deg,
+      #1a0000,
+      #1a0000 20px,
+      #330000 20px,
+      #330000 40px
+    )`;
+    document.body.style.color = '#ffcccc';
+    document.body.style.backgroundAttachment = 'fixed'; // Prevents shifting
+  
+    // Title styling
+    const title = document.querySelector('h1');
+    if (title) {
+      title.style.color = '#ff4d4d';
+      title.style.textShadow = '0 0 10px #ff0000';
+    }
+  }
+  function applyCrewmateStyle() {
+    // Card styling
+    const card = document.querySelector('.card');
+    card.style.backgroundColor = '#ccf2ff';
+    card.style.color = '#1e90ff';
+    card.style.boxShadow = '0 0 30px #00bfff';
+    card.style.border = '4px solid #00bfff';
+    card.style.transition = 'all 0.3s ease-in-out';
+  
+    // Apply background to BODY instead of HTML
+    document.body.style.background = `repeating-linear-gradient(
+      45deg,
+      #ccf2ff,
+      #ccf2ff 20px,
+      #99ccff 20px,
+      #99ccff 40px
+    )`;
+    document.body.style.color = '#4682b4';
+    document.body.style.backgroundAttachment = 'fixed'; // Prevents shifting
+  
+    // Title styling
+    const title = document.querySelector('h1');
+    if (title) {
+      title.style.color = '#1e90ff';
+      title.style.textShadow = '0 0 10px #00bfff';
+    }
+  }
+
 
 function revealWord() {
     const card = document.querySelector('.card');
@@ -107,11 +161,10 @@ function revealWord() {
 
             // Apply impostor styling if the player is the impostor
             if (playerData.role === 'impostor') {
-                card.style.backgroundColor = '#300000';       // dark red/black tone
-                card.style.color = '#ff4c4c';                 // bright evil red
-                card.style.boxShadow = '0 0 30px #ff0000';    // glowing red effect
-                card.style.border = '3px solid #900';
-                card.style.transition = 'all 0.3s ease-in-out';
+                applyImpostorStyle(); // Apply impostor styling
+            }
+            else{
+                applyCrewmateStyle(); // Apply crewmate styling
             }
 
             // Add a delay before fading out
@@ -121,6 +174,7 @@ function revealWord() {
                 // Hide the card entirely after the animation
                 setTimeout(() => {
                     card.style.display = 'none';
+                    document.getElementById("title").textContent = `You are the ${playerData.role}, your word is ${playerData.word}`;; // Show the word card
                 }, 300); // Time for the fade-out animation to finish
             }, 1000); // Delay before fade-out starts
         } else {

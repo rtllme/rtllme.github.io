@@ -55,7 +55,8 @@ function createRoom() {
     players: {
       [playerId]: {
         name: playerName,
-        word: "####" // Placeholder for the word
+        word: "####", // Placeholder for the word
+        role: 'none' // Placeholder for the role
       } // Add the creator as a player
     }
   })
@@ -97,7 +98,8 @@ function joinRoom() {
     firebase.database().ref('rooms/' + roomCode + '/players').update({
       [playerId]: {
         name: playerName,
-        word: '####'  // Placeholder for the word
+        word: '####',  // Placeholder for the word
+        role:'none'
       }
     })
     .then(() => {
