@@ -13,35 +13,51 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
+
 // Function to get or create a player ID
 function getOrCreatePlayerId() {
-    // Retrieve the player ID from localStorage, or generate a new one if not found
     let playerId = localStorage.getItem("playerId");
     if (!playerId) {
-        playerId = crypto.randomUUID(); // Generate a UUID for the player
-        localStorage.setItem("playerId", playerId); // Store it in localStorage
+        playerId = crypto.randomUUID();
+        localStorage.setItem("playerId", playerId);
     }
-    return playerId; // Return the player ID
+    return playerId;
 }
 
 // Initialize player ID and roomCode
 let playerId = getOrCreatePlayerId();
-let roomCode = null; // Room code will be set after loading the page
+let roomCode = null;
 
 // On page load, fetch the room code and data
-window.onload = async function() {
-    // Get the room code from the URL query parameter
+window.onload = async function () {
     const urlParams = new URLSearchParams(window.location.search);
-    roomCode = urlParams.get('roomCode'); // Retrieve the room code from the URL
+    roomCode = urlParams.get('roomCode');
 
     if (roomCode) {
         try {
             const snapshot = await database.ref('rooms/' + roomCode).once('value');
             const roomData = snapshot.val();
-            // Check if the player is the host of the room
+
             if (roomData.host === playerId && roomData.players[playerId].role === 'none') {
-                const wordPair = await fetchWordPair(); // Fetch the word pair for the game
-                assignRoles(wordPair); // Assign roles to players
+                const wordPair = await fetchWordPair();
+                assignRoles(wordPair);
+
+                const players = roomData.players;
+                const names = Object.values(players).map(player => player.name);
+
+                function shuffle(array) {
+                    for (let i = array.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [array[i], array[j]] = [array[j], array[i]];
+                    }
+                }
+
+                shuffle(names);
+                console.log(`The shuffled order is: ${names.join(', ')}`);
+
+                firebase.database().ref('rooms/' + roomCode).update({
+                    order: names.join(', ')
+                });
             }
         } catch (error) {
             console.error("Error fetching room data:", error);
@@ -49,42 +65,35 @@ window.onload = async function() {
     }
 }
 
-// Function to fetch a random word pair from a JSON file
+// Fetch a random word pair from JSON file
 async function fetchWordPair() {
     try {
-        const response = await fetch('lists.json'); // Fetch the word list JSON file
-        const data = await response.json(); // Parse the JSON data
-
-        // Randomly select a word pair from the list
+        const response = await fetch('lists.json');
+        const data = await response.json();
         const randomPair = data[Math.floor(Math.random() * data.length)];
-        return randomPair; // Return the selected word pair
+        return randomPair;
     } catch (error) {
         console.error('Error fetching word list:', error);
-        return null; // Return null in case of error
+        return null;
     }
 }
 
-// Function to assign roles to players in the room
+// Assign roles to players
 function assignRoles(wordPair) {
     const playersRef = database.ref('rooms/' + roomCode + '/players');
 
     playersRef.once('value').then(snapshot => {
-        const players = snapshot.val();// Get the list of players in the room
-        const playerIds = Object.keys(players); // Get the player IDs
-
-        // Randomly select one player to be the impostor
+        const players = snapshot.val();
+        const playerIds = Object.keys(players);
         const impostorIndex = Math.floor(Math.random() * playerIds.length);
         const impostorId = playerIds[impostorIndex];
 
-        console.log("Impostor ID:", impostorId); // Log the impostor ID for debugging
+        console.log("Impostor ID:", impostorId);
 
-        // Assign roles to each player
         playerIds.forEach(playerId => {
-            // Assign the role of 'impostor' or 'crewmate' based on the random selection
             const role = (playerId === impostorId) ? 'impostor' : 'crewmate';
             const word = (role === 'impostor') ? wordPair[0] : wordPair[1];
 
-            // Update the player's role and word in the database
             playersRef.child(playerId).update({
                 role: role,
                 word: word
@@ -93,18 +102,17 @@ function assignRoles(wordPair) {
     }).catch(error => {
         console.error("Error assigning roles:", error);
     });
-    
 }
+
+// Apply impostor styles
 function applyImpostorStyle() {
-    // Card styling
     const card = document.querySelector('.card');
     card.style.backgroundColor = '#1a0000';
     card.style.color = '#ff1a1a';
     card.style.boxShadow = '0 0 30px #ff0000';
     card.style.border = '4px solid #ff1a1a';
     card.style.transition = 'all 0.3s ease-in-out';
-  
-    // Apply background to BODY instead of HTML
+
     document.body.style.background = `repeating-linear-gradient(
       45deg,
       #1a0000,
@@ -113,25 +121,24 @@ function applyImpostorStyle() {
       #330000 40px
     )`;
     document.body.style.color = '#ffcccc';
-    document.body.style.backgroundAttachment = 'fixed'; // Prevents shifting
-  
-    // Title styling
+    document.body.style.backgroundAttachment = 'fixed';
+
     const title = document.querySelector('h1');
     if (title) {
-      title.style.color = '#ff4d4d';
-      title.style.textShadow = '0 0 10px #ff0000';
+        title.style.color = '#ff4d4d';
+        title.style.textShadow = '0 0 10px #ff0000';
     }
-  }
-  function applyCrewmateStyle() {
-    // Card styling
+}
+
+// Apply crewmate styles
+function applyCrewmateStyle() {
     const card = document.querySelector('.card');
     card.style.backgroundColor = '#ccf2ff';
     card.style.color = '#1e90ff';
     card.style.boxShadow = '0 0 30px #00bfff';
     card.style.border = '4px solid #00bfff';
     card.style.transition = 'all 0.3s ease-in-out';
-  
-    // Apply background to BODY instead of HTML
+
     document.body.style.background = `repeating-linear-gradient(
       45deg,
       #ccf2ff,
@@ -140,17 +147,16 @@ function applyImpostorStyle() {
       #99ccff 40px
     )`;
     document.body.style.color = '#4682b4';
-    document.body.style.backgroundAttachment = 'fixed'; // Prevents shifting
-  
-    // Title styling
+    document.body.style.backgroundAttachment = 'fixed';
+
     const title = document.querySelector('h1');
     if (title) {
-      title.style.color = '#1e90ff';
-      title.style.textShadow = '0 0 10px #00bfff';
+        title.style.color = '#1e90ff';
+        title.style.textShadow = '0 0 10px #00bfff';
     }
-  }
+}
 
-
+// Reveal word and apply styles
 function revealWord() {
     const card = document.querySelector('.card');
 
@@ -159,24 +165,21 @@ function revealWord() {
         if (playerData) {
             document.getElementById("cardWord").textContent = playerData.word;
 
-            // Apply impostor styling if the player is the impostor
             if (playerData.role === 'impostor') {
-                applyImpostorStyle(); // Apply impostor styling
-            }
-            else{
-                applyCrewmateStyle(); // Apply crewmate styling
+                applyImpostorStyle();
+            } else {
+                applyCrewmateStyle();
             }
 
-            // Add a delay before fading out
             setTimeout(() => {
                 card.classList.add('fade-out');
 
-                // Hide the card entirely after the animation
                 setTimeout(() => {
                     card.style.display = 'none';
-                    document.getElementById("title").textContent = `You are the ${playerData.role}, your word is ${playerData.word}`;; // Show the word card
-                }, 300); // Time for the fade-out animation to finish
-            }, 1000); // Delay before fade-out starts
+                    document.getElementById("title").textContent =
+                        `You are the ${playerData.role}, your word is ${playerData.word}`;
+                }, 300);
+            }, 1000);
         } else {
             console.error("Player data not found.");
         }

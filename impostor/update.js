@@ -105,15 +105,10 @@ function checkRoomStatus() {
   database.ref('rooms/' + roomCode).on('value', function(snapshot) {
     const roomData = snapshot.val();
 
-    // Log the room data for debugging
-    console.log(roomData);
-
     // Ensure roomData is not null or undefined before accessing properties
     if (roomData && roomData.status === "started") {
       console.log("Game has started, redirecting players...");
       window.location.replace("game.html?roomCode=" + roomCode);
-    } else {
-      console.log("Room not found or status not started.");
     }
   });
 }
