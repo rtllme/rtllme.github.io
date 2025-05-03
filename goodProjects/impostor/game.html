@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Word Impostor Game</title>
+  <style>
+    body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: repeating-linear-gradient(
+    45deg,
+    #f9f9f9,
+    #f9f9f9 20px,
+    #f0f0f0 20px,
+    #f0f0f0 40px
+  );
+  background-attachment: fixed; /* Prevent background from shifting */
+  color: #333;
+  text-align: center;
+  margin: 0;
+  padding: 0; /* Remove extra padding */
+}
+
+h1 {
+  font-size: 2.5em;
+  margin-top: 60px; /* Use margin-top instead of padding-top for the h1 */
+}
+    .card {
+  background-color: #ffffff;
+  color: #222;
+  padding: 5vw 7vw;  /* Use viewport width for padding */
+  margin: auto;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+  font-size: 2em;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  width: 40vw;   /* Set width as a percentage of viewport width */
+  height: 30vh;  /* Set height as a percentage of viewport height */
+  max-width: 600px;  /* Set a maximum width */
+  max-height: 400px; /* Set a maximum height */
+  min-width: 300px;  /* Set a minimum width */
+  min-height: 200px; /* Set a minimum height */
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease;
+}
+
+.card.fade-out {
+  opacity: 0;   /* Fade the card out */
+  transform: scale(0.9);  /* Optionally shrink the card while fading out */
+  pointer-events: none;  /* Disable clicks while the card is fading out */
+}
+
+  </style>
+</head>
+<body>
+  <h1>Your Word Is</h1>
+
+  <div class="card" onclick="revealWord()">
+    <h1 id="cardWord"></h1>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="gameLogic.js"></script>
+</body>
+</html>
