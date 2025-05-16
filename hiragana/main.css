@@ -1,66 +1,99 @@
-body{
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
     background-color: #0a060a;
     font-family: "Oswald", sans-serif;
     color: #f3eaf1;
     text-align: center;
+    padding: 5vh 2vw;
 }
 
-*{
-    margin: 0px;
-    padding: 0px;
-}
-.main{
-    font-size: 11vw;
-    padding-bottom: 2.5vh;
+/* Main title */
+.main {
+    font-size: 10vw;
+    padding-bottom: 3vh;
+    font-weight: bold;
+    text-shadow: 2px 2px #653c44;
 }
 
-a{
+/* Links */
+a {
     color: #f3eaf1;
     text-decoration: none;
+    transition: color 0.3s ease;
+}
+a:hover {
+    color: #c9a9b8;
 }
 
-input{
+/* Input styling */
+input {
     font-family: "Oswald", sans-serif;
     font-weight: bold;
     color: #f3eaf1;
     background-color: #0a020a;
     border: 2px solid #653c44;
-    border-radius: 10px; 
+    border-radius: 10px;
     text-align: center;
-    width: 50vw;
-    font-size: 200%;
+    width: 80%;
+    max-width: 500px;
+    font-size: 1.5rem;
+    padding: 0.6em;
+    margin: 1vh auto;
+    transition: border-color 0.3s ease;
+}
+input:focus {
+    border-color: #aa6c7b;
+    outline: none;
 }
 
-button{
+/* Button styling */
+button {
     font-family: "Oswald", sans-serif;
     font-weight: bold;
     color: #f3eaf1;
     background-color: #0a020a;
     border: 2px solid #653c44;
-    border-radius: 10px; 
-    text-align: center;
-    padding: 5px;
-    width: 35vw;
-    font-size: 150%;
+    border-radius: 10px;
+    padding: 0.6em;
+    width: 70%;
+    max-width: 400px;
+    font-size: 1.2rem;
+    margin: 1vh auto;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
-
-button:hover{
+button:hover {
     background-color: #1f071f;
+    transform: scale(1.03);
 }
 
-.hide{
+/* Hidden option styling */
+.hide {
     background-color: #0a020a;
-    color: #0a020a00;
+    color: transparent;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
-.hide:hover{
-    background-color: #1f071f00;
+.hide:hover {
+    background-color: rgba(31, 7, 31, 0.1);
     color: #f3eaf1;
 }
 
+/* Checkbox styling */
 input[type="checkbox"] {
     width: 25px;
+    height: 25px;
+    accent-color: #653c44;
 }
 
-br{
-    height: 0px;
+/* Line breaks */
+br {
+    display: block;
+    margin: 1vh 0;
+    height: 0;
 }
