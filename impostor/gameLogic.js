@@ -188,7 +188,7 @@ function revealWord() {
     });
 }
 
-function deletf() {
+function deletef() {
     const roomRef = ref(database, `rooms/${roomCode}`);
     remove(roomRef)
         .then(() => {
