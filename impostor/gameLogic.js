@@ -187,3 +187,7 @@ function revealWord() {
         console.error("Error fetching player data:", error);
     });
 }
+
+function deletf() {
+    const roomRef = ref(database, `rooms/${roomCode}`);
+}
