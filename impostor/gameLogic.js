@@ -190,4 +190,12 @@ function revealWord() {
 
 function deletf() {
     const roomRef = ref(database, `rooms/${roomCode}`);
+    remove(roomRef)
+        .then(() => {
+            console.log("Room deleted successfully.");
+            window.location.href = "index.html";
+        })
+        .catch((error) => {
+            console.error("Error deleting room:", error);
+        });
 }
