@@ -5,95 +5,246 @@
     box-sizing: border-box;
 }
 
+:root {
+    /* Define color variables for easy theming and consistency */
+    --color-background: #0a060a; /* Deep near-black */
+    --color-text: #f3eaf1; /* Off-white/light lavender */
+    --color-accent-dark: #653c44; /* Dark muted pink/maroon - for borders/shadows */
+    --color-accent-light: #aa6c7b; /* Medium muted pink - for focus/active */
+    --color-hover-text: #c9a9b8; /* Light muted pink - for hover text */
+    --color-hover-bg: #1f071f; /* Slightly lighter dark background - for hover background */
+    --font-primary: "Oswald", sans-serif;
+}
+
 body {
-    background-color: #0a060a;
-    font-family: "Oswald", sans-serif;
-    color: #f3eaf1;
+    background-color: var(--color-background);
+    font-family: var(--font-primary);
+    color: var(--color-text);
     text-align: center;
+    /* Use flexible units for padding */
     padding: 5vh 2vw;
+    min-height: 100vh; /* Ensure body takes full height for better centering */
 }
 
-/* Main title */
+/* --- Main Title (H1) --- */
 .main {
-    font-size: 10vw;
+    /* Use a fixed, max, and min font size for better control across devices */
+    font-size: clamp(3rem, 10vw, 6rem);
     padding-bottom: 3vh;
-    font-weight: bold;
-    text-shadow: 2px 2px #653c44;
+    font-weight: 700; /* Explicitly set to boldest available Oswald weight */
+    /* Increased shadow size for a bolder look */
+    text-shadow: 4px 4px var(--color-accent-dark);
+    cursor: pointer; /* Explicitly indicate it's clickable */
 }
 
-/* Links */
+/* --- General Links (A) --- */
 a {
-    color: #f3eaf1;
+    color: var(--color-text);
     text-decoration: none;
     transition: color 0.3s ease;
 }
+
 a:hover {
-    color: #c9a9b8;
+    color: var(--color-hover-text);
 }
 
-/* Input styling */
-input {
-    font-family: "Oswald", sans-serif;
-    font-weight: bold;
-    color: #f3eaf1;
-    background-color: #0a020a;
-    border: 2px solid #653c44;
-    border-radius: 10px;
+/* --- Input and Button Base Styles --- */
+input, button {
+    font-family: var(--font-primary);
+    font-weight: 500; /* Slightly less bold for readability in forms */
+    color: var(--color-text);
+    background-color: var(--color-background);
+    border: 2px solid var(--color-accent-dark);
+    border-radius: 12px; /* Slightly larger border-radius for softer look */
+    padding: 0.8em; /* Increased padding for larger touch targets */
+    margin: 1.5vh auto; /* Increased vertical margin for better spacing */
+    transition: all 0.3s ease; /* Transition 'all' for border and background */
+    display: block; /* Ensures they take up full available width and respect margin: auto */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4); /* Subtle box shadow for depth */
+}
+
+/* --- Input Styling Specifics --- */
+input:not([type="checkbox"]) {
     text-align: center;
-    width: 80%;
+    width: 90%; /* Increased width slightly */
     max-width: 500px;
-    font-size: 1.5rem;
-    padding: 0.6em;
-    margin: 1vh auto;
-    transition: border-color 0.3s ease;
+    font-size: 1.2rem; /* Adjusted for better form filling */
 }
+
 input:focus {
-    border-color: #aa6c7b;
+    border-color: var(--color-accent-light);
+    box-shadow: 0 0 10px var(--color-accent-light); /* Glow effect on focus */
     outline: none;
+    background-color: var(--color-hover-bg); /* Slight background change on focus */
 }
 
-/* Button styling */
+/* --- Button Styling Specifics --- */
 button {
-    font-family: "Oswald", sans-serif;
-    font-weight: bold;
-    color: #f3eaf1;
-    background-color: #0a020a;
-    border: 2px solid #653c44;
-    border-radius: 10px;
-    padding: 0.6em;
-    width: 70%;
-    max-width: 400px;
-    font-size: 1.2rem;
-    margin: 1vh auto;
+    font-weight: 700; /* Make button text bold again */
+    width: 80%;
+    max-width: 450px;
+    font-size: 1.4rem; /* Larger font size for better call-to-action */
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-button:hover {
-    background-color: #1f071f;
-    transform: scale(1.03);
 }
 
-/* Hidden option styling */
+button:hover {
+    background-color: var(--color-hover-bg);
+    border-color: var(--color-accent-light);
+    transform: translateY(-2px); /* Lift effect for better feedback */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.6);
+}
+
+/* --- Checkbox Container Styling (New) --- */
+/* Target the div wrapping the checkbox and label for consistent alignment */
+.bodyMain div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0.8vh auto;
+    width: 80%;
+    max-width: 300px;
+}
+
+.bodyMain label {
+    font-size: 1.3rem;
+    margin-left: 10px;
+}
+
+/* --- Checkbox Styling Specifics --- */
+input[type="checkbox"] {
+    /* Reset base styles for better control */
+    display: inline-block;
+    width: 28px; 
+    height: 28px;
+    margin: 0; 
+    border: 2px solid var(--color-accent-dark);
+    border-radius: 4px;
+    cursor: pointer;
+    /* Use accent-color for a modern look */
+    accent-color: var(--color-accent-dark);
+    /* For consistency with the dark theme, you might want to force a dark background */
+    background-color: var(--color-background);
+}
+
+/* --- Hidden Option Styling --- */
 .hide {
-    background-color: #0a020a;
+    /* Apply base button/input styles first for consistency */
+    border: none;
+    box-shadow: none;
+    background-color: transparent; /* Changed to transparent for a truly 'hidden' look */
     color: transparent;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    padding: 0.5em 0.8em;
+    margin: 1vh auto;
+    width: auto; /* Allow content to dictate width */
+    font-size: 1rem;
 }
 .hide:hover {
-    background-color: rgba(31, 7, 31, 0.1);
-    color: #f3eaf1;
+    background-color: rgba(101, 60, 68, 0.1); /* Use accent-dark for a subtle hover background */
+    color: var(--color-text);
+    transform: none;
+    box-shadow: none;
 }
 
-/* Checkbox styling */
-input[type="checkbox"] {
-    width: 25px;
-    height: 25px;
-    accent-color: #653c44;
-}
-
-/* Line breaks */
+/* --- Line Breaks (Br) --- */
+/* Removed the br styling as it's cleaner to manage vertical spacing with margins on elements, 
+but keeping the block for now just in case your HTML relies on it heavily. */
 br {
     display: block;
     margin: 1vh 0;
     height: 0;
+}
+
+/* --- General Grid/Layout Styling (For hiragana.html & index.html) --- */
+.grids {
+    display: grid;
+    /* Added a small gap for visual separation */
+    gap: 20px;
+    /* Min-height 100vh on the parent (body) is usually enough, but this ensures the grid content stretches */
+    min-height: 80vh; 
+    width: 100%;
+    align-content: center; /* Center the grid items vertically */
+    justify-content: center;
+}
+
+.grids a {
+    /* Apply button-like styling to grid links for a unified look */
+    display: block;
+    padding: 1.5rem;
+    border: 2px solid var(--color-accent-dark);
+    border-radius: 12px;
+    width: 80vw; /* Responsive width */
+    max-width: 550px; /* Maximum size */
+    font-size: clamp(1.2rem, 5vw, 2.5rem); /* Responsive font size */
+    font-weight: 500;
+    margin: 0 auto;
+    transition: all 0.3s ease;
+    text-shadow: 1px 1px var(--color-accent-dark);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+}
+
+.grids a:hover {
+    background-color: var(--color-hover-bg);
+    color: var(--color-text); /* Keep text color same or change */
+    border-color: var(--color-accent-light);
+    transform: scale(1.05); /* Zoom effect on hover */
+}
+
+.grids .tit {
+    font-size: clamp(2rem, 8vw, 4rem);
+    font-weight: 700;
+    margin-bottom: 20px;
+    border: none; /* Make the main title stand out by removing the border */
+    background: transparent;
+    text-shadow: 4px 4px var(--color-accent-dark);
+    transform: none !important;
+    box-shadow: none;
+}
+
+/* Style for the 'new!' tag in the hiragana table link */
+.grids p {
+    color: #ff4d4d; /* Bright red for attention */
+    font-size: 0.5em; /* Smaller relative to the link text */
+    margin-top: 5px;
+    font-weight: 700;
+}
+/* --- General Grid/Layout Styling --- */
+.grids {
+    display: grid;
+    /* Reduced gap between items */
+    gap: 12px; 
+    /* Ensures the grid occupies the full available height */
+    min-height: 90vh; 
+    width: 100%;
+    /* Distribute the space between the grid items evenly */
+    align-content: space-evenly; 
+    justify-content: center;
+}
+
+.grids a {
+    display: block;
+    /* Significantly reduced padding to shrink the button height */
+    padding: 1.0rem; 
+    border: 2px solid var(--color-accent-dark);
+    border-radius: 12px;
+    /* Slightly reduced max width */
+    max-width: 450px; 
+    /* Changed the responsive font size: Smaller minimum, smaller maximum */
+    font-size: clamp(1rem, 4.5vw, 1.8rem); 
+    font-weight: 500;
+    margin: 0 auto;
+    transition: all 0.3s ease;
+    text-shadow: 1px 1px var(--color-accent-dark);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+}
+
+.grids .tit {
+    /* Reduced font size for the main title to save vertical space */
+    font-size: clamp(1.8rem, 7vw, 3rem);
+    font-weight: 700;
+    margin-bottom: 5px; /* Reduced bottom margin */
+    border: none;
+    background: transparent;
+    text-shadow: 4px 4px var(--color-accent-dark);
+    transform: none !important;
+    box-shadow: none;
 }
