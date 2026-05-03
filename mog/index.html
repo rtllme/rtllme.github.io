@@ -10,7 +10,13 @@
     body { margin: 0; background: #0c0c0c; color: #00ffff; font-family: sans-serif; overflow: hidden; }
     #container { position: relative; width: 100vw; height: 100vh; display: flex; flex-direction: column; }
     video { display: none; }
-    canvas { width: 100%; height: 100%; object-fit: cover; }
+    canvas {
+    width: 100vw;
+    height: 100vh;
+    /* This ensures the image never stretches, just fits the screen */
+    object-fit: contain; 
+    background: #000; /* Letterbox color */
+  }
     #hud {
       position: absolute; bottom: 20px; left: 20px; right: 20px;
       background: rgba(12, 12, 12, 0.85); border: 1px solid #00ffff;
