@@ -1,23 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Vector Benchmark Mobile</title>
+  <title>Vector Benchmark Pro Mobile</title>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils"></script>
+  <!-- New Drawing Utils library -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils"></script>
   <style>
     body { margin: 0; background: #0c0c0c; color: #00ffff; font-family: sans-serif; overflow: hidden; }
     #container { position: relative; width: 100vw; height: 100vh; display: flex; flex-direction: column; }
     video { display: none; }
     canvas { width: 100%; height: 100%; object-fit: cover; }
     #hud {
-      position: absolute; top: 20px; left: 20px; width: 280px;
+      position: absolute; bottom: 20px; left: 20px; right: 20px;
       background: rgba(12, 12, 12, 0.85); border: 1px solid #00ffff;
       border-top: 3px solid #ff00ff; padding: 15px; box-sizing: border-box;
+      border-radius: 8px; box-shadow: 0 0 10px rgba(0,255,255,0.3);
     }
-    .metric { font-size: 14px; margin-bottom: 8px; color: #e0e0e0; }
-    #score-box { margin-top: 15px; border-top: 1px solid #00ffff; padding-top: 10px; }
-    #score { font-size: 24px; color: #ff00ff; font-weight: bold; }
-    #tier { font-size: 32px; font-weight: bold; }
+    .metric { font-size: 14px; margin-bottom: 8px; color: #e0e0e0; display: inline-block; width: 48%; }
+    #score-box { margin-top: 15px; border-top: 1px solid #00ffff; padding-top: 10px; text-align: center; }
+    #score { font-size: 20px; color: #ff00ff; font-weight: bold; }
+    #tier { font-size: 28px; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -25,11 +28,11 @@
     <video id="input_video"></video>
     <canvas id="output_canvas"></canvas>
     <div id="hud">
-      <div style="font-weight:bold; margin-bottom:15px;">BIOMETRIC VECTOR [MOBILE]</div>
+      <div style="font-weight:bold; margin-bottom:15px; text-align:center;">VECTOR BENCHMARK [BIOMETRIC WIREFRAME]</div>
       <div id="metrics"></div>
       <div id="score-box">
         <div id="score">SCORE: --</div>
-        <div id="tier">SCANNING...</div>
+        <div id="tier">INITIALIZING...</div>
       </div>
     </div>
   </div>
@@ -45,28 +48,37 @@
     let smoothed = {};
     const smooth = (key, val) => {
       if (!smoothed[key]) smoothed[key] = val;
-      smoothed[key] = (0.15 * val) + (0.85 * smoothed[key]);
+      smoothed[key] = (0.12 * val) + (0.88 * smoothed[key]); // Slower smoothing for web
       return smoothed[key];
     };
 
     const dist = (p1, p2) => Math.hypot(p1.x - p2.x, p1.y - p2.y);
 
     function onResults(results) {
+      // 1. Prepare Canvas
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      ctx.save();
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
 
       if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
         const lm = results.multiFaceLandmarks[0];
-        
-        // Math Ports from Python
+
+        // 2. NEW: Draw the Wireframe and Dots
+        // Drawing the tessellation (the 3D mesh lines)
+        drawConnectors(ctx, lm, FACEMESH_TESSELATION, {color: '#ff00ff', lineWidth: 0.5});
+        // Drawing the landmark dots (the points)
+        drawLandmarks(ctx, lm, {color: '#00ffff', lineWidth: 0.2, radius: 1});
+
+        // 3. Biometric Math (Ported from V4)
         const cheekW = dist(lm[234], lm[454]);
         const fwhrH = dist(lm[9], lm[164]);
         const fwhr = smooth('fwhr', cheekW / fwhrH);
         
-        const noseBase = lm[2], chin = lm[152], lipT = lm[0], lipB = lm[17];
-        const pcRatio = smooth('pc', dist(lipB, chin) / dist(noseBase, lipT));
+        const chin = lm[152], lipB = lm[17];
+        const jW = dist(lm[172], lm[397]);
+        const mandRatio = smooth('mand', jW / cheekW);
         
         const eyeW = dist(lm[133], lm[33]);
         const interOc = dist(lm[133], lm[362]);
@@ -74,9 +86,9 @@
 
         // Scoring
         let s = 100;
-        s -= Math.abs(pcRatio - 2.1) * 10;
         s -= Math.abs(spacing - 1.0) * 15;
         s -= Math.abs(fwhr - 1.9) * 10;
+        s -= Math.abs(mandRatio - 0.75) * 12;
         const finalScore = smooth('score', Math.max(1, Math.min(s, 99.8)));
 
         // Tier Logic
@@ -89,24 +101,27 @@
         // UI Update
         metricDiv.innerHTML = `
           <div class="metric">FWHR: ${fwhr.toFixed(2)}</div>
-          <div class="metric">P-C RATIO: ${pcRatio.toFixed(2)}</div>
-          <div class="metric">EYE SPACE: ${spacing.toFixed(2)}</div>
+          <div class="metric">EYE SPACING: ${spacing.toFixed(2)}</div>
+          <div class="metric">JAW TAPER: ${mandRatio.toFixed(2)}</div>
         `;
         scoreDiv.innerText = `SCORE: ${finalScore.toFixed(1)}`;
         tierDiv.innerText = title;
         tierDiv.style.color = color;
       }
+      ctx.restore();
     }
 
+    // Initialize MediaPipe
     const faceMesh = new FaceMesh({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`});
-    faceMesh.setOptions({maxNumFaces: 1, refineLandmarks: true, minDetectionConfidence: 0.5});
+    faceMesh.setOptions({maxNumFaces: 1, refineLandmarks: true, minDetectionConfidence: 0.6});
     faceMesh.onResults(onResults);
 
+    // Setup Mobile Camera (default to front camera)
     const camera = new Camera(video, {
       onFrame: async () => { await faceMesh.send({image: video}); },
-      width: 640, height: 480
+      width: 640, height: 480, facingMode: 'user'
     });
     camera.start();
   </script>
 </body>
-</html> 
+</html>
