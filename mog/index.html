@@ -1,44 +1,130 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Vector Benchmark Pro Mobile</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Vector Benchmark Pro</title>
+  
+  <!-- MediaPipe Dependencies -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils"></script>
-  <!-- New Drawing Utils library -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils"></script>
+
   <style>
-    body { margin: 0; background: #0c0c0c; color: #00ffff; font-family: sans-serif; overflow: hidden; }
-    #container { position: relative; width: 100vw; height: 100vh; display: flex; flex-direction: column; }
-    video { display: none; }
-    canvas {
-    width: 100vw;
-    height: 100vh;
-    /* This ensures the image never stretches, just fits the screen */
-    object-fit: contain; 
-    background: #000; /* Letterbox color */
-  }
-    #hud {
-      position: absolute; bottom: 20px; left: 20px; right: 20px;
-      background: rgba(12, 12, 12, 0.85); border: 1px solid #00ffff;
-      border-top: 3px solid #ff00ff; padding: 15px; box-sizing: border-box;
-      border-radius: 8px; box-shadow: 0 0 10px rgba(0,255,255,0.3);
+    body { 
+      margin: 0; 
+      padding: 0;
+      background: #000; 
+      color: #00ffff; 
+      font-family: 'JetBrains Mono', 'Space Grotesk', monospace; 
+      overflow: hidden; 
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-    .metric { font-size: 14px; margin-bottom: 8px; color: #e0e0e0; display: inline-block; width: 48%; }
-    #score-box { margin-top: 15px; border-top: 1px solid #00ffff; padding-top: 10px; text-align: center; }
-    #score { font-size: 20px; color: #ff00ff; font-weight: bold; }
-    #tier { font-size: 28px; font-weight: bold; }
+
+    #container { 
+      position: relative; 
+      width: 100vw; 
+      height: 100vh; 
+      background: #000;
+    }
+
+    video { display: none; }
+
+    canvas { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: contain; /* Prevents stretching */
+    }
+
+    /* Top-Center HUD */
+    #hud {
+      position: absolute; 
+      top: 25px; 
+      left: 50%;
+      transform: translateX(-50%); 
+      width: 90%;
+      max-width: 340px;
+      background: rgba(10, 10, 10, 0.85); 
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      border-top: 3px solid #ff00ff; 
+      padding: 18px; 
+      box-sizing: border-box;
+      border-radius: 12px; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(0,255,255,0.1);
+      text-align: center;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+    }
+
+    .metrics-grid { 
+      display: flex; 
+      justify-content: space-between; 
+      margin-bottom: 12px; 
+      border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+      padding-bottom: 12px;
+    }
+    
+    .metric { 
+      font-size: 10px; 
+      color: #888; 
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .metric span {
+      display: block;
+      color: #00ffff;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+    
+    #score-box { padding-top: 5px; }
+    
+    #score-label { 
+      font-size: 11px; 
+      color: #ff00ff; 
+      font-weight: bold; 
+      letter-spacing: 2px;
+      margin-bottom: 4px;
+    }
+
+    #tier { 
+      font-size: 36px; 
+      font-weight: 900; 
+      margin-top: 2px; 
+      letter-spacing: -1px;
+      text-shadow: 0 0 20px rgba(0,255,255,0.4);
+    }
+
+    /* Scanline Overlay Effect */
+    #container::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+                  linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+      background-size: 100% 4px, 3px 100%;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
+
   <div id="container">
-    <video id="input_video"></video>
+    <video id="input_video" playsinline></video>
     <canvas id="output_canvas"></canvas>
+    
     <div id="hud">
-      <div style="font-weight:bold; margin-bottom:15px; text-align:center;">VECTOR BENCHMARK [BIOMETRIC WIREFRAME]</div>
-      <div id="metrics"></div>
+      <div class="metrics-grid" id="metrics_display">
+        <div class="metric">FWHR<span id="m_fwhr">0.00</span></div>
+        <div class="metric">SPACE<span id="m_space">0.00</span></div>
+        <div class="metric">TAPER<span id="m_taper">0.00</span></div>
+      </div>
       <div id="score-box">
-        <div id="score">SCORE: --</div>
-        <div id="tier">INITIALIZING...</div>
+        <div id="score-label">BIOMETRIC SCORE: <span id="m_score">0.0</span></div>
+        <div id="tier">INITIALIZING</div>
       </div>
     </div>
   </div>
@@ -47,23 +133,30 @@
     const video = document.getElementById('input_video');
     const canvas = document.getElementById('output_canvas');
     const ctx = canvas.getContext('2d');
-    const metricDiv = document.getElementById('metrics');
-    const scoreDiv = document.getElementById('score');
-    const tierDiv = document.getElementById('tier');
+    
+    // UI Elements
+    const elFwhr = document.getElementById('m_fwhr');
+    const elSpace = document.getElementById('m_space');
+    const elTaper = document.getElementById('m_taper');
+    const elScore = document.getElementById('m_score');
+    const elTier = document.getElementById('tier');
 
     let smoothed = {};
     const smooth = (key, val) => {
       if (!smoothed[key]) smoothed[key] = val;
-      smoothed[key] = (0.12 * val) + (0.88 * smoothed[key]); // Slower smoothing for web
+      smoothed[key] = (0.10 * val) + (0.90 * smoothed[key]); 
       return smoothed[key];
     };
 
     const dist = (p1, p2) => Math.hypot(p1.x - p2.x, p1.y - p2.y);
 
     function onResults(results) {
-      // 1. Prepare Canvas
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      // Sync canvas resolution to video stream to prevent math skew
+      if (canvas.width !== results.image.width || canvas.height !== results.image.height) {
+        canvas.width = results.image.width;
+        canvas.height = results.image.height;
+      }
+
       ctx.save();
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
@@ -71,18 +164,15 @@
       if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
         const lm = results.multiFaceLandmarks[0];
 
-        // 2. NEW: Draw the Wireframe and Dots
-        // Drawing the tessellation (the 3D mesh lines)
-        drawConnectors(ctx, lm, FACEMESH_TESSELATION, {color: '#ff00ff', lineWidth: 0.5});
-        // Drawing the landmark dots (the points)
-        drawLandmarks(ctx, lm, {color: '#00ffff', lineWidth: 0.2, radius: 1});
+        // 1. Draw Wireframe
+        drawConnectors(ctx, lm, FACEMESH_TESSELATION, {color: '#ff00ff44', lineWidth: 0.5});
+        drawLandmarks(ctx, lm, {color: '#00ffff66', lineWidth: 0.1, radius: 0.5});
 
-        // 3. Biometric Math (Ported from V4)
+        // 2. Biometric Calculation
         const cheekW = dist(lm[234], lm[454]);
         const fwhrH = dist(lm[9], lm[164]);
         const fwhr = smooth('fwhr', cheekW / fwhrH);
         
-        const chin = lm[152], lipB = lm[17];
         const jW = dist(lm[172], lm[397]);
         const mandRatio = smooth('mand', jW / cheekW);
         
@@ -90,43 +180,58 @@
         const interOc = dist(lm[133], lm[362]);
         const spacing = smooth('spacing', interOc / eyeW);
 
-        // Scoring
+        // 3. Objective Scoring Logic
         let s = 100;
-        s -= Math.abs(spacing - 1.0) * 15;
-        s -= Math.abs(fwhr - 1.9) * 10;
-        s -= Math.abs(mandRatio - 0.75) * 12;
-        const finalScore = smooth('score', Math.max(1, Math.min(s, 99.8)));
+        s -= Math.abs(spacing - 1.0) * 18;
+        s -= Math.abs(fwhr - 1.9) * 12;
+        s -= Math.abs(mandRatio - 0.75) * 15;
+        const finalScore = smooth('score', Math.max(1, Math.min(s, 99.7)));
 
-        // Tier Logic
-        let title = "SUB-TIER", color = "#ff00ff";
-        if (finalScore >= 96) { title = "TRUE ADAM"; color = "#00ff96"; }
-        else if (finalScore >= 90) { title = "CHAD"; color = "#00ff96"; }
-        else if (finalScore >= 80) { title = "CHADLITE"; color = "#00ffff"; }
-        else if (finalScore >= 70) { title = "HTN"; color = "#00ffff"; }
-
-        // UI Update
-        metricDiv.innerHTML = `
-          <div class="metric">FWHR: ${fwhr.toFixed(2)}</div>
-          <div class="metric">EYE SPACING: ${spacing.toFixed(2)}</div>
-          <div class="metric">JAW TAPER: ${mandRatio.toFixed(2)}</div>
-        `;
-        scoreDiv.innerText = `SCORE: ${finalScore.toFixed(1)}`;
-        tierDiv.innerText = title;
-        tierDiv.style.color = color;
+        // 4. UI Update
+        updateDisplay(fwhr, spacing, mandRatio, finalScore);
       }
       ctx.restore();
     }
 
-    // Initialize MediaPipe
-    const faceMesh = new FaceMesh({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`});
-    faceMesh.setOptions({maxNumFaces: 1, refineLandmarks: true, minDetectionConfidence: 0.6});
+    function updateDisplay(fwhr, spacing, mand, score) {
+      let title = "SUB-3", color = "#ff00ff";
+      if (score >= 96) { title = "TRUE ADAM"; color = "#00ff96"; }
+      else if (score >= 90) { title = "CHAD"; color = "#00ff96"; }
+      else if (score >= 80) { title = "CHADLITE"; color = "#00ffff"; }
+      else if (score >= 70) { title = "HTN"; color = "#00ffff"; }
+      else if (score >= 60) { title = "MTN"; color = "#aaa"; }
+      else if (score >= 50) { title = "LTN"; color = "#777"; }
+      else if (score >= 30) { title = "SUB-5"; color = "#ff00ff"; }
+
+      elFwhr.innerText = fwhr.toFixed(2);
+      elSpace.innerText = spacing.toFixed(2);
+      elTaper.innerText = mand.toFixed(2);
+      elScore.innerText = score.toFixed(1);
+      elTier.innerText = title;
+      elTier.style.color = color;
+    }
+
+    const faceMesh = new FaceMesh({
+      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`
+    });
+
+    faceMesh.setOptions({
+      maxNumFaces: 1,
+      refineLandmarks: true,
+      minDetectionConfidence: 0.6,
+      minTrackingConfidence: 0.6
+    });
+
     faceMesh.onResults(onResults);
 
-    // Setup Mobile Camera (default to front camera)
     const camera = new Camera(video, {
-      onFrame: async () => { await faceMesh.send({image: video}); },
-      width: 640, height: 480, facingMode: 'user'
+      onFrame: async () => {
+        await faceMesh.send({image: video});
+      },
+      width: 640,
+      height: 480
     });
+    
     camera.start();
   </script>
 </body>
