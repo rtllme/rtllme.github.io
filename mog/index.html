@@ -3,192 +3,184 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Vector Benchmark Elite</title>
-  
+  <title>MORPHEUS v3.3 · Balanced Biometrics</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils"></script>
-
   <style>
-    body { margin: 0; padding: 0; background: #080808; color: #00ffff; font-family: 'Courier New', monospace; overflow: hidden; display: flex; justify-content: center; align-items: center; }
-    #container { position: relative; width: 100vw; height: 100vh; background: #000; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --gold: #c9a84c; --platinum: #d4d4d8; --red: #ef4444; --cyan: #00ffff; --magenta: #ff00ff; --bg: #09090b; --panel: rgba(10, 10, 12, 0.95); --border: rgba(201, 168, 76, 0.3); }
+    body { background: var(--bg); color: var(--platinum); font-family: 'DM Mono', monospace; overflow: hidden; height: 100vh; }
+    #container { position: relative; width: 100vw; height: 100vh; }
+    video, canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
     video { display: none; }
-    canvas { width: 100%; height: 100%; object-fit: contain; }
-
-    #hud {
-      position: absolute; top: 15px; left: 50%; transform: translateX(-50%); 
-      width: 92%; max-width: 400px;
-      background: rgba(10, 10, 10, 0.92); border: 1px solid rgba(0, 255, 255, 0.2);
-      border-top: 4px solid #ff00ff; padding: 15px; border-radius: 8px; 
-      text-align: center; z-index: 10; backdrop-filter: blur(12px);
-    }
-
-    .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; border-bottom: 1px solid rgba(255, 0, 255, 0.2); padding-bottom: 12px; }
-    .metric { font-size: 8px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
-    .metric span { display: block; color: #00ffff; font-size: 11px; margin-top: 2px; font-weight: bold; }
-    
-    #score-box { padding-top: 5px; }
-    #score-label { font-size: 10px; color: #ff00ff; font-weight: bold; letter-spacing: 3px; }
-    #tier { font-size: 42px; font-weight: 900; margin: 2px 0; text-shadow: 0 0 15px rgba(0,255,255,0.6); font-style: italic; }
+    #brand { position: absolute; top: 0; width: 100%; height: 50px; background: var(--panel); display: flex; align-items: center; padding: 0 20px; z-index: 20; border-bottom: 1px solid var(--border); }
+    #brand-name { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--gold); letter-spacing: 4px; }
+    .panel { position: absolute; top: 70px; width: 190px; background: var(--panel); padding: 12px; border-radius: 4px; border: 1px solid var(--border); z-index: 10; backdrop-filter: blur(10px); }
+    #panel-left { left: 20px; border-left: 3px solid var(--gold); }
+    #panel-right { right: 20px; border-right: 3px solid var(--gold); }
+    .metric-row { margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .metric-name { font-size: 8px; color: var(--gold); letter-spacing: 1px; }
+    .metric-val { font-size: 13px; color: #fff; padding-bottom: 2px; }
+    #panel-bottom { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); width: 320px; background: var(--panel); padding: 15px; border-radius: 8px; border: 1px solid var(--gold); text-align: center; z-index: 10; }
+    #composite-score { font-family: 'Bebas Neue', sans-serif; font-size: 64px; color: var(--gold); line-height: 1; }
+    #tier-label { font-size: 18px; letter-spacing: 4px; margin-top: 5px; font-weight: bold; }
+    #warning-overlay { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; color: var(--red); justify-content: center; align-items: center; font-family: 'Bebas Neue'; font-size: 32px; text-align: center; }
   </style>
 </head>
 <body>
 
-  <div id="container">
+<div id="container">
     <video id="input_video" playsinline></video>
     <canvas id="output_canvas"></canvas>
+    <div id="warning-overlay">LEVEL FACE<br><span style="font-size: 14px; color: #fff;">STABILIZING SENSORS...</span></div>
+    <div id="brand"><div id="brand-name">MORPHEUS ELITE V3.3</div></div>
     
-    <div id="hud">
-      <div class="metrics-grid">
-        <div class="metric">FWHR<span id="m_fwhr">0.00</span></div>
-        <div class="metric">TILT<span id="m_tilt">0.0°</span></div>
-        <div class="metric">SYM%<span id="m_sym">0%</span></div>
-        <div class="metric">L-3RD<span id="m_l3rd">0.00</span></div>
-        <div class="metric">PHI Δ<span id="m_phi">0.00</span></div>
-        <div class="metric">MOUTH<span id="m_mouth">0.00</span></div>
-        <div class="metric">TAPER<span id="m_taper">0.00</span></div>
-        <div class="metric">EYE GAP<span id="m_space">0.00</span></div>
-        <div class="metric">NASAL<span id="m_nasal">0.00</span></div>
-      </div>
-      <div id="score-box">
-        <div id="score-label">SYSTEM RANKING: <span id="m_score">0.0</span></div>
-        <div id="tier">INITIALIZING</div>
-      </div>
+    <div id="panel-left" class="panel">
+        <div class="metric-row"><div class="metric-name">F-WHR</div><div id="v_fwhr" class="metric-val">—</div></div>
+        <div class="metric-row"><div class="metric-name">PHI RATIO</div><div id="v_phi" class="metric-val">—</div></div>
+        <div class="metric-row"><div class="metric-name">L-3RD</div><div id="v_l3rd" class="metric-val">—</div></div>
+        <div class="metric-row"><div class="metric-name">SYMMETRY</div><div id="v_sym" class="metric-val">—</div></div>
     </div>
-  </div>
 
-  <script>
+    <div id="panel-right" class="panel">
+        <div class="metric-row"><div class="metric-name">CANTHAL TILT</div><div id="v_tilt" class="metric-val">—</div></div>
+        <div class="metric-row"><div class="metric-name">EYE SPACING</div><div id="v_eyesp" class="metric-val">—</div></div>
+        <div class="metric-row"><div class="metric-name">NASAL</div><div id="v_nasal" class="metric-val">—</div></div>
+        <div class="metric-row"><div class="metric-name">JAW WIDTH</div><div id="v_jaw" class="metric-val">—</div></div>
+    </div>
+
+    <div id="panel-bottom">
+        <div style="font-size: 9px; letter-spacing: 3px; color: var(--platinum);">NEURAL HARMONY INDEX</div>
+        <div id="composite-score">0.0</div>
+        <div id="tier-label">CALIBRATING</div>
+    </div>
+</div>
+
+<script>
     const video = document.getElementById('input_video');
     const canvas = document.getElementById('output_canvas');
     const ctx = canvas.getContext('2d');
-    
-    const elements = {
-      fwhr: document.getElementById('m_fwhr'), tilt: document.getElementById('m_tilt'),
-      sym: document.getElementById('m_sym'), l3rd: document.getElementById('m_l3rd'),
-      phi: document.getElementById('m_phi'), mouth: document.getElementById('m_mouth'),
-      taper: document.getElementById('m_taper'), space: document.getElementById('m_space'),
-      nasal: document.getElementById('m_nasal'), score: document.getElementById('m_score'),
-      tier: document.getElementById('tier')
-    };
+    const warning = document.getElementById('warning-overlay');
 
     let smoothed = {};
-    const smooth = (key, val) => {
-      if (!smoothed[key]) smoothed[key] = val;
-      smoothed[key] = (0.07 * val) + (0.93 * smoothed[key]); 
-      return smoothed[key];
+    const smooth = (key, val, alpha = 0.08) => {
+        if (!smoothed[key]) smoothed[key] = val;
+        smoothed[key] = alpha * val + (1 - alpha) * smoothed[key];
+        return smoothed[key];
     };
 
-    const dist = (p1, p2) => Math.hypot(p1.x - p2.x, p1.y - p2.y);
-    const getAngle = (p1, p2) => Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
+    let FW = 1280, FH = 720;
+    const px = (p) => ({ x: p.x * FW, y: p.y * FH });
+    const dist = (a, b) => { 
+        const A = px(a), B = px(b); 
+        return Math.hypot(A.x - B.x, A.y - B.y); 
+    };
 
     function onResults(results) {
-      if (canvas.width !== results.image.width || canvas.height !== results.image.height) {
-        canvas.width = results.image.width; canvas.height = results.image.height;
-      }
+        FW = results.image.width; FH = results.image.height;
+        canvas.width = FW; canvas.height = FH;
+        ctx.save();
+        ctx.clearRect(0, 0, FW, FH);
+        ctx.drawImage(results.image, 0, 0);
 
-      ctx.save();
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
+        if (!results.multiFaceLandmarks || results.multiFaceLandmarks.length === 0) {
+            warning.style.display = 'flex';
+            ctx.restore(); return;
+        }
 
-      if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
         const lm = results.multiFaceLandmarks[0];
 
+        // POSE VALIDATION (Slightly more lenient to prevent "10" scores from minor movement)
+        const yaw = Math.abs(lm[234].z - lm[454].z);
+        const pitch = Math.abs(lm[10].z - lm[152].z);
+        if (yaw > 0.08 || pitch > 0.1) {
+            warning.style.display = 'flex';
+            ctx.restore(); return;
+        }
+        warning.style.display = 'none';
+
+        // MESH DRAWING
         drawConnectors(ctx, lm, FACEMESH_TESSELATION, {color: '#ff00ff22', lineWidth: 0.5});
         drawLandmarks(ctx, lm, {color: '#00ffff33', lineWidth: 0.1, radius: 0.5});
 
-        // --- MATH REPOSITORY ---
-        const faceW = dist(lm[234], lm[454]);
-        const faceH = dist(lm[10], lm[152]);
+        // CORE MATH
+        const bizW = dist(lm[234], lm[454]);
+        const midfaceH = dist(lm[168], lm[2]);
+        const browLine = (dist(lm[159], lm[0]) + dist(lm[386], lm[0])) / 2;
         
-        // 1. Core Proportions
-        const fwhr = smooth('fwhr', faceW / dist(lm[9], lm[164]));
-        const phi = smooth('phi', faceH / faceW);
+        const fwhr = smooth('fwhr', bizW / browLine);
+        const phi = smooth('phi', dist(lm[10], lm[152]) / bizW);
+        const l3rd = smooth('l3rd', dist(lm[2], lm[152]) / midfaceH);
         
-        // 2. Canthal Tilt (Average of both eyes)
-        const tiltL = -getAngle(lm[133], lm[33]); 
-        const tiltR = getAngle(lm[362], lm[263]);
-        const avgTilt = smooth('tilt', (tiltL + tiltR) / 2);
+        const tiltR = Math.atan2(px(lm[133]).y - px(lm[33]).y, Math.abs(px(lm[33]).x - px(lm[133]).x)) * 180 / Math.PI;
+        const tiltL = Math.atan2(px(lm[362]).y - px(lm[263]).y, Math.abs(px(lm[263]).x - px(lm[362]).x)) * 180 / Math.PI;
+        const avgTilt = smooth('tilt', (tiltR + tiltL) / 2);
 
-        // 3. Lower Third Ratio (Nose-to-Chin / Midface)
-        const midFace = dist(lm[168], lm[2]);
-        const lowerThird = dist(lm[2], lm[152]);
-        const l3Ratio = smooth('l3rd', lowerThird / midFace);
+        const eyeGap = dist(lm[133], lm[362]);
+        const eyeW = (dist(lm[33], lm[133]) + dist(lm[362], lm[263])) / 2;
+        const eyeSpacing = smooth('eyesp', (eyeGap / eyeW) * 100);
 
-        // 4. Lip/Mouth Ratio (Mouth Width / Nose Width)
-        const mouthW = dist(lm[61], lm[291]);
-        const noseW = dist(lm[129], lm[358]);
-        const mouthRatio = smooth('mouth', mouthW / noseW);
+        const nasalIdx = smooth('nasal', dist(lm[129], lm[358]) / midfaceH);
+        const jawRatio = smooth('jaw', (dist(lm[132], lm[361]) / bizW) * 100);
 
-        // 5. Existing Metrics
-        const lSym = dist(lm[168], lm[468]), rSym = dist(lm[168], lm[473]);
-        const sym = smooth('sym', 100 - (Math.abs(lSym - rSym) / ((lSym+rSym)/2) * 100));
-        const taper = smooth('taper', dist(lm[172], lm[397]) / faceW);
-        const space = smooth('space', dist(lm[133], lm[362]) / dist(lm[133], lm[33]));
-        const nasal = smooth('nasal', noseW / dist(lm[168], lm[2]));
+        // SYMMETRY (Fixed: less punishing for camera lens distortion)
+        const midX = lm[168].x;
+        let symDev = Math.abs(Math.abs(midX - lm[234].x) - Math.abs(lm[454].x - midX));
+        const symScore = smooth('sym', 100 - (symDev * 400));
 
-        // --- BALANCED SCORING ALGORITHM ---
-        let s = 95; // Start at a high base
-        const target = (val, ideal, weight, tolerance) => {
+        // --- BALANCED SCORING ENGINE ---
+        let s = 92; // Realistic starting point
+        const penalize = (val, ideal, weight, tol) => {
             const diff = Math.abs(val - ideal);
-            if (diff <= tolerance) return 0; // No penalty in the "Grace Zone"
-            return (diff - tolerance) * weight;
+            if (diff <= tol) return 0;
+            return (diff - tol) * (weight / (tol * 2)); // Smoother falloff
         };
 
-        // 1. FWHR: High impact, but generous tolerance
-        s -= target(fwhr, 1.85, 12, 0.15); 
-
-        // 2. PHI: Overall face shape
-        s -= target(phi, 1.618, 10, 0.1);
-
-        // 3. SYM: Only penalize if variance is > 5% (accounts for camera tilt)
-        if (sym < 95) s -= (95 - sym) * 0.5;
-
-        // 4. TILT: Only penalize negative tilt; neutral/positive is fine
-        if (avgTilt < 0) s -= Math.abs(avgTilt) * 1.5; 
-
-        // 5. LOWER THIRD: 1.0 is ideal, but 0.9 to 1.1 is "normal"
-        s -= target(l3Ratio, 1.0, 8, 0.1);
-
-        // 6. MOUTH: Lowered weight
-        s -= target(mouthRatio, 1.618, 5, 0.2);
-
-        // 7. EYE SPACE:
-        s -= target(space, 1.0, 8, 0.1);
-
-        // Final smoothing and floor
-        const score = smooth('score', Math.max(15, Math.min(s, 99.9)));
-
-        // --- UI UPDATE ---
-        elements.fwhr.innerText = fwhr.toFixed(2);
-        elements.tilt.innerText = avgTilt.toFixed(1) + "°";
-        elements.sym.innerText = Math.round(sym) + "%";
-        elements.l3rd.innerText = l3Ratio.toFixed(2);
-        elements.phi.innerText = phi.toFixed(2);
-        elements.mouth.innerText = mouthRatio.toFixed(2);
-        elements.taper.innerText = taper.toFixed(2);
-        elements.space.innerText = space.toFixed(2);
-        elements.nasal.innerText = nasal.toFixed(2);
-        elements.score.innerText = score.toFixed(1);
-
-        let t = "SUB-5", c = "#ff00ff";
-        if (score >= 97) { t = "TRUE ADAM"; c = "#00ff96"; }
-        else if (score >= 90) { t = "CHAD"; c = "#00ff96"; }
-        else if (score >= 82) { t = "CHADLITE"; c = "#00ffff"; }
-        else if (score >= 73) { t = "HTN"; c = "#00ffff"; }
-        else if (score >= 60) { t = "MTN"; c = "#aaa"; }
+        s -= penalize(fwhr, 1.85, 12, 0.2); 
+        s -= penalize(phi, 1.61, 10, 0.15);
+        s -= penalize(l3rd, 1.0, 8, 0.1);
+        s -= penalize(eyeSpacing, 100, 10, 8); // 1:1 eye width to gap
+        s -= penalize(nasalIdx, 0.7, 6, 0.1);
         
-        elements.tier.innerText = t;
-        elements.tier.style.color = c;
-      }
-      ctx.restore();
+        if (avgTilt < 0) s -= Math.abs(avgTilt) * 2; // Penalize negative tilt
+        if (symScore < 94) s -= (94 - symScore) * 1.5;
+
+        const finalScore = smooth('final', Math.max(15, Math.min(99.5, s)));
+
+        // UPDATE UI
+        document.getElementById('v_fwhr').innerText = fwhr.toFixed(2);
+        document.getElementById('v_phi').innerText = phi.toFixed(2);
+        document.getElementById('v_l3rd').innerText = l3rd.toFixed(2);
+        document.getElementById('v_sym').innerText = Math.max(0, symScore).toFixed(1) + "%";
+        document.getElementById('v_tilt').innerText = avgTilt.toFixed(1) + "°";
+        document.getElementById('v_eyesp').innerText = eyeSpacing.toFixed(1) + "%";
+        document.getElementById('v_nasal').innerText = nasalIdx.toFixed(2);
+        document.getElementById('v_jaw').innerText = jawRatio.toFixed(1) + "%";
+        
+        document.getElementById('composite-score').innerText = finalScore.toFixed(1);
+        
+        let t = "ORDINARY", c = "#888";
+        if (finalScore > 90) { t = "GOD-TIER"; c = "var(--gold)"; }
+        else if (finalScore > 82) { t = "CHAD"; c = "#fff"; }
+        else if (finalScore > 72) { t = "CHADLITE"; c = "var(--cyan)"; }
+        else if (finalScore > 60) { t = "HTN"; c = "var(--platinum)"; }
+        else if (finalScore > 45) { t = "MTN"; c = "#aaa"; }
+        
+        const tierEl = document.getElementById('tier-label');
+        tierEl.innerText = t;
+        tierEl.style.color = c;
+
+        ctx.restore();
     }
 
     const faceMesh = new FaceMesh({ locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${f}` });
-    faceMesh.setOptions({ maxNumFaces: 1, refineLandmarks: true, minDetectionConfidence: 0.65 });
+    faceMesh.setOptions({ maxNumFaces: 1, refineLandmarks: true, minDetectionConfidence: 0.7, minTrackingConfidence: 0.7 });
     faceMesh.onResults(onResults);
 
-    const camera = new Camera(video, { onFrame: async () => { await faceMesh.send({image: video}); }, width: 640, height: 480 });
+    const camera = new Camera(video, { onFrame: async () => { await faceMesh.send({image: video}); }, width: 1280, height: 720 });
     camera.start();
-  </script>
+</script>
 </body>
 </html>
