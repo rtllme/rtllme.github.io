@@ -280,7 +280,19 @@
     line-height: 1.5;
     padding-right: 12px;
     border-right: 2px solid var(--border);
-    transition: color 0.2s, border-color 0.2s;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transform: translateY(-4px);
+    transition: max-height 0.25s ease, opacity 0.2s ease, transform 0.2s ease, color 0.2s, border-color 0.2s;
+  }
+
+  .question-item:hover .q-ans,
+  .question-item:focus-within .q-ans,
+  .question-item:focus .q-ans {
+    max-height: 32rem;
+    opacity: 1;
+    transform: translateY(0);
   }
 
   .question-item.answered .q-ans {
@@ -793,6 +805,7 @@ function buildLessons(subject) {
       const li_el = document.createElement('li');
       li_el.className = 'question-item' + (answered[subject].has(key) ? ' answered' : '');
       li_el.dataset.key = key;
+      li_el.tabIndex = 0;
       li_el.innerHTML = `
         <span class="q-num">س${qi + 1}</span>
         <div class="q-content">
