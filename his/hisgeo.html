@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مرشد الدراسة | التاريخ والجغرافيا</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #141720;
+    --surface2: #1c2030;
+    --border: #252a3a;
+    --gold: #c9a84c;
+    --gold-light: #e8c87a;
+    --teal: #2dd4bf;
+    --rose: #fb7185;
+    --blue: #60a5fa;
+    --text: #e8eaf2;
+    --muted: #8890a8;
+    --radius: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    direction: rtl;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #0d0f14 0%, #141a2e 50%, #0d1520 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,168,76,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(201,168,76,0.1);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 999px;
+    padding: 6px 18px;
+    font-size: 0.78rem;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    margin-bottom: 20px;
+  }
+
+  header h1 {
+    font-family: 'Amiri', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+
+  header h1 span {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  header p {
+    color: var(--muted);
+    font-size: 1rem;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  /* TABS */
+  .tabs-wrap {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13,15,20,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs-wrap::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 16px 18px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* SUBJECT PANEL */
+  .subject-panel { display: none; animation: fadeUp 0.35s ease; }
+  .subject-panel.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .subject-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 36px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .subject-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .subject-header h2 {
+    font-family: 'Amiri', serif;
+    font-size: 1.6rem;
+    color: var(--text);
+  }
+  .subject-header p { color: var(--muted); font-size: 0.9rem; margin-top: 4px; }
+
+  /* LESSON CARD */
+  .lesson-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .lesson-card:hover { border-color: rgba(201,168,76,0.3); }
+
+  .lesson-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 22px;
+    cursor: pointer;
+    gap: 16px;
+    user-select: none;
+  }
+
+  .lesson-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .lesson-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .lesson-header h3 {
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.4;
+  }
+
+  .chevron {
+    color: var(--muted);
+    transition: transform 0.25s;
+    flex-shrink: 0;
+    font-size: 0.9rem;
+  }
+  .lesson-card.open .chevron { transform: rotate(180deg); }
+
+  .lesson-body {
+    display: none;
+    padding: 0 22px 22px;
+  }
+  .lesson-card.open .lesson-body { display: block; }
+
+  /* QUESTIONS */
+  .questions-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .question-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    transition: all 0.18s;
+    cursor: pointer;
+  }
+  .question-item:hover { border-color: rgba(201,168,76,0.25); background: #1f2438; }
+  .question-item.answered { border-color: rgba(45,212,191,0.3); background: rgba(45,212,191,0.04); }
+
+  .q-num {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--gold);
+    background: rgba(201,168,76,0.1);
+    border-radius: 4px;
+    padding: 2px 7px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .q-text {
+    font-size: 0.9rem;
+    color: var(--text);
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  .q-check {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.18s;
+  }
+  .question-item.answered .q-check {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: #0d0f14;
+    font-size: 0.65rem;
+  }
+
+  /* PROGRESS */
+  .progress-bar-wrap {
+    margin-bottom: 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 22px;
+  }
+  .progress-top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 0.85rem;
+  }
+  .progress-label { color: var(--muted); }
+  .progress-count { color: var(--gold); font-weight: 700; }
+
+  .bar-track {
+    height: 6px;
+    background: var(--surface2);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    border-radius: 999px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  /* COLORS per subject */
+  .hist .subject-icon { background: rgba(251,113,133,0.12); }
+  .hist .lesson-num  { background: rgba(251,113,133,0.12); color: var(--rose); }
+  .hist .lesson-card:hover { border-color: rgba(251,113,133,0.3); }
+
+  .geo .subject-icon { background: rgba(96,165,250,0.12); }
+  .geo .lesson-num  { background: rgba(96,165,250,0.12); color: var(--blue); }
+  .geo .lesson-card:hover { border-color: rgba(96,165,250,0.3); }
+
+  /* SEARCH */
+  .search-wrap {
+    margin-bottom: 28px;
+    position: relative;
+  }
+  .search-input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    color: var(--text);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.92rem;
+    outline: none;
+    transition: border-color 0.2s;
+    direction: rtl;
+  }
+  .search-input:focus { border-color: rgba(201,168,76,0.4); }
+  .search-input::placeholder { color: var(--muted); }
+
+  .no-results {
+    text-align: center;
+    color: var(--muted);
+    padding: 40px;
+    font-size: 0.9rem;
+  }
+
+  /* STATS ROW */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    text-align: center;
+  }
+  .stat-num { font-size: 1.6rem; font-weight: 800; color: var(--gold); }
+  .stat-lbl { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+
+  @media (max-width: 600px) {
+    .stats-row { grid-template-columns: repeat(3,1fr); }
+    .lesson-header h3 { font-size: 0.88rem; }
+    .q-text { font-size: 0.85rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-badge">📚 مرشد الدراسة التفاعلي</div>
+  <h1>التاريخ و<span>الجغرافيا</span></h1>
+  <p>أسئلة المراجعة الشاملة — تتبع تقدمك درسًا بدرس</p>
+</header>
+
+<div class="tabs-wrap" id="tabs">
+  <button class="tab-btn active" onclick="switchTab('home')">🏠 الرئيسية</button>
+  <button class="tab-btn" onclick="switchTab('history')">📜 التاريخ</button>
+  <button class="tab-btn" onclick="switchTab('geo')">🌍 الجغرافيا</button>
+</div>
+
+<main>
+
+  <!-- HOME -->
+  <div class="subject-panel active" id="panel-home">
+    <div class="stats-row" id="global-stats">
+      <div class="stat-card">
+        <div class="stat-num" id="stat-total">0</div>
+        <div class="stat-lbl">إجمالي الأسئلة</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-done">0</div>
+        <div class="stat-lbl">تمت مراجعتها</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-pct">0%</div>
+        <div class="stat-lbl">نسبة الإنجاز</div>
+      </div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;text-align:center;margin-bottom:24px;">
+      <div style="font-size:2.5rem;margin-bottom:12px;">🎓</div>
+      <h2 style="font-family:'Amiri',serif;font-size:1.4rem;margin-bottom:8px;">مرحبًا بك في مرشد المراجعة</h2>
+      <p style="color:var(--muted);font-size:0.9rem;line-height:1.7;max-width:420px;margin:0 auto;">يضم هذا الدليل جميع أسئلة المراجعة لمادتي التاريخ والجغرافيا. انقر على أي سؤال لتعليمه كـ "تمت مراجعته" وتتبع تقدمك.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div onclick="switchTab('history')" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;cursor:pointer;transition:all 0.2s;text-align:center;" onmouseover="this.style.borderColor='rgba(251,113,133,0.4)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="font-size:2rem;margin-bottom:10px;">📜</div>
+        <div style="font-weight:700;font-size:1rem;margin-bottom:6px;">التاريخ</div>
+        <div style="color:var(--muted);font-size:0.8rem;">8 دروس · 82 سؤالاً</div>
+      </div>
+      <div onclick="switchTab('geo')" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;cursor:pointer;transition:all 0.2s;text-align:center;" onmouseover="this.style.borderColor='rgba(96,165,250,0.4)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="font-size:2rem;margin-bottom:10px;">🌍</div>
+        <div style="font-weight:700;font-size:1rem;margin-bottom:6px;">الجغرافيا</div>
+        <div style="color:var(--muted);font-size:0.8rem;">8 دروس · 80 سؤالاً</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="subject-panel hist" id="panel-history">
+    <div class="subject-header">
+      <div class="subject-icon">📜</div>
+      <div>
+        <h2>مادة التاريخ</h2>
+        <p>8 دروس — 82 سؤالاً للمراجعة</p>
+      </div>
+    </div>
+
+    <div class="search-wrap">
+      <input class="search-input" type="text" placeholder="ابحث في أسئلة التاريخ..." oninput="filterQuestions('history', this.value)" />
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-top">
+        <span class="progress-label">تقدم المراجعة</span>
+        <span class="progress-count" id="hist-progress-text">0 / 82</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" id="hist-bar"></div></div>
+    </div>
+
+    <div id="history-lessons"></div>
+    <div class="no-results" id="hist-no-results" style="display:none;">لا توجد نتائج مطابقة.</div>
+  </div>
+
+  <!-- GEO -->
+  <div class="subject-panel geo" id="panel-geo">
+    <div class="subject-header">
+      <div class="subject-icon">🌍</div>
+      <div>
+        <h2>مادة الجغرافيا</h2>
+        <p>8 دروس — 80 سؤالاً للمراجعة</p>
+      </div>
+    </div>
+
+    <div class="search-wrap">
+      <input class="search-input" type="text" placeholder="ابحث في أسئلة الجغرافيا..." oninput="filterQuestions('geo', this.value)" />
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-top">
+        <span class="progress-label">تقدم المراجعة</span>
+        <span class="progress-count" id="geo-progress-text">0 / 80</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" id="geo-bar"></div></div>
+    </div>
+
+    <div id="geo-lessons"></div>
+    <div class="no-results" id="geo-no-results" style="display:none;">لا توجد نتائج مطابقة.</div>
+  </div>
+
+</main>
+
+<script>
+const DATA = {
+  history: [
+    {
+      title: "الدرس الأول: التحولات الاقتصادية والمالية والاجتماعية والفكرية",
+      questions: [
+        "ما هي أهم مظاهر التحول التقني في الميدان الصناعي خلال القرن 19؟",
+        "كيف تطورت الفلاحة بفضل «المكننة» ونظام التناوب الزراعي؟",
+        "وضح دور نظام «التبادل الحر» في ازدهار التجارة العالمية.",
+        "ما هو دور العامل التنظيمي (الليبرالية) في الرفع من الاستثمارات؟",
+        "كيف ساهمت المواصلات (السكك الحديدية والسفن البخارية) في التحولات الاقتصادية؟",
+        "عرف مفهوم «الرأسمالية المالية» وما هي خصائصها (البورصة، الأبناك)؟",
+        "ما الأسباب الكامنة وراء «الانفجار الديمغرافي» في أوروبا القرن 19؟",
+        "فسر ظاهرة «التمدين» وظهور المدن المليونية.",
+        "قارن بين وضعية الطبقة البورجوازية وطبقة البروليتاريا.",
+        "ما هي التيارات الثلاثة للفكر الاشتراكي (الطوباوية، الفوضوية، العلمية)؟",
+        "من هم أبرز رواد الاشتراكية العلمية وما هي أفكارهم؟",
+        "ما هي أهم المكتسبات التي حققتها الحركة النقابية للعمال؟"
+      ]
+    },
+    {
+      title: "الدرس الثاني: التنافس الإمبريالي واندلاع الحرب العالمية الأولى",
+      questions: [
+        "كيف ساهم فائض الإنتاج والحاجة للمواد الأولية في ظهور التنافس الإمبريالي؟",
+        "اذكر مثالاً لنزاع سياسي داخل أوروبا ومثالاً آخر خارجها.",
+        "ما الفرق بين «التحالف الثلاثي» و«الوفاق الثلاثي»؟",
+        "كيف تجلى التسابق نحو التسلح بين القوى الأوروبية؟",
+        "ما هو دور مؤتمر «برلين الأول» و«برلين الثاني» في اقتسام مناطق النفوذ؟",
+        "وضح أهمية مؤتمر «الجزيرة الخضراء» بالنسبة للمغرب.",
+        "ما هي الاتفاقيات الثنائية التي مهدت لاحتلال المغرب (خاصة الاتفاق الودي 1904)؟",
+        "اشرح أزمة «طنجة 1905» وأزمة «أكادير 1911» بين فرنسا وألمانيا.",
+        "ما هي الأزمات البلقانية وكيف أدت إلى توتر العلاقات الدولية؟",
+        "ما هو السبب المباشر لاندلاع الحرب العالمية الأولى؟"
+      ]
+    },
+    {
+      title: "الدرس الثالث: اليقظة الفكرية بالمشرق العربي",
+      questions: [
+        "ما هي المظاهر الثقافية لليقظة الفكرية (الترجمة، المطبعة، الصحافة)؟",
+        "كيف ساهمت سياسة «التتريك» في نمو الشعور القومي العربي؟",
+        "وضح دور البعثات الطلابية والطبقة الوسطى في هذه اليقظة.",
+        "من هم أبرز رواد «التيار السلفي الإصلاحي»؟",
+        "ما هي مطالب التيار السلفي في المجالين الديني والسياسي؟",
+        "من هم رواد «التيار العلماني الليبرالي»؟",
+        "كيف يرى التيار العلماني علاقة الدين بالدولة وتحديث المجتمع؟",
+        "قارن بين نظرة التيارين (السلفي والعلماني) لتعليم المرأة.",
+        "ما هي أهم نتائج اليقظة الفكرية على مستوى الوعي القومي والعمل السياسي؟"
+      ]
+    },
+    {
+      title: "الدرس الرابع: الضغوط الاستعمارية على المغرب ومحاولات الإصلاح",
+      questions: [
+        "ما هي ظروف ونتائج معركة «إسلي» 1844؟",
+        "وضح غموض الحدود في معاهدة «لالة مغنية» وانعكاساته.",
+        "ما هي الشروط القاسية التي فرضتها إسبانيا بعد «حرب تطوان» 1860؟",
+        "كيف استغلت بريطانيا الضغوط الاقتصادية لفرض التبادل الحر 1856؟",
+        "ما هو خطر «الحمايات القنصلية» على سيادة المغرب (معاهدة بيكلار)؟",
+        "لخص أهم محاولات الإصلاح العسكري والإداري في عهد الحسن الأول.",
+        "ما هي الإصلاحات الاقتصادية والجبائية التي نهجها المغرب؟",
+        "لماذا عارض العلماء والفقهاء هذه الإصلاحات؟",
+        "ما هي العوامل الخارجية التي أدت إلى فشل الإصلاحات (القروض، الأسلحة المتهالكة)؟",
+        "كيف أثر تزايد عدد المحميين على الوضعية الداخلية؟"
+      ]
+    },
+    {
+      title: "الدرس الخامس: أوروبا من نهاية الحرب العالمية الأولى إلى أزمة 1929",
+      questions: [
+        "ما الفرق بين المرحلتين الأولى والثانية للحرب العالمية الأولى؟",
+        "اذكر أهم معاهدات الصلح التي فرضت على الدول المنهزمة.",
+        "كيف تغيرت الخريطة السياسية لأوروبا بعد الحرب؟",
+        "ما هي ظروف اندلاع «الثورة البلشفية» في روسيا وأهم مراسيمها؟",
+        "اشرح وضعية «جمهورية فيمار» في ألمانيا وبروز الحزب النازي.",
+        "كيف وصل موسوليني والحزب الفاشي إلى السلطة في إيطاليا؟",
+        "ما هو السبب المباشر لاندلاع أزمة 1929 (وول ستريت)؟",
+        "كيف انتقلت الأزمة من الولايات المتحدة إلى باقي العالم؟",
+        "ما هي الانعكاسات الاجتماعية والسياسية للأزمة (البطالة، الأنظمة الديكتاتورية)؟"
+      ]
+    },
+    {
+      title: "الدرس السادس: الحرب العالمية الثانية (الأسباب والنتائج)",
+      questions: [
+        "كيف ساهمت أزمة 1929 ومعاهدة فرساي في التمهيد للحرب؟",
+        "وضح دور فشل «عصبة الأمم» في تدهور السلم العالمي.",
+        "ما هي التحالفات العسكرية الكبرى (دول المحور ودول الحلفاء)؟",
+        "ما هو المفهوم التوسعي «المجال الحيوي» عند هتلر؟",
+        "ما هو السبب المباشر لاندلاع الحرب العالمية الثانية؟",
+        "تميزت المرحلة الأولى بانتصار دول المحور؛ اذكر أهم عملياتها.",
+        "ما هو الحدث الذي قلب موازين القوى لصالح الحلفاء في المرحلة الثانية؟",
+        "ما هي الحصيلة البشرية والاجتماعية للحرب؟",
+        "كيف قسمت ألمانيا بعد الحرب وما هي المؤسسة الدولية التي تأسست (1945)؟",
+        "عرف «نظام القطبية الثنائية» و«الحرب الباردة»."
+      ]
+    },
+    {
+      title: "الدرس السابع: نظام الحماية والاستغلال الاستعماري بالمغرب",
+      questions: [
+        "ما هي الظروف الخارجية والداخلية التي مهدت لفرض الحماية 1912؟",
+        "عرف «نظام الحماية» كما ورد في معاهدة فاس.",
+        "تتبع مراحل الاحتلال العسكري للمغرب (من 1911 إلى 1934).",
+        "قارن بين الإدارة الفرنسية والإدارة المغربية في «المنطقة السلطانية».",
+        "ما هي خصوصية الإدارة في «المنطقة الخليفية» و«طنجة الدولية»؟",
+        "ما هي الآليات الاقتصادية التي اعتمدتها فرنسا لاستغلال المغرب؟",
+        "وضح مظاهر الاستغلال الاستعماري في المجالين الفلاحي والصناعي.",
+        "كيف أثر الاستغلال الاستعماري على الحرف التقليدية والميزان التجاري؟",
+        "ما هي الانعكاسات الاجتماعية للاستغلال (الهجرة القروية، البروليتاريا)؟"
+      ]
+    },
+    {
+      title: "الدرس الثامن: نضال المغرب من أجل الاستقلال واستكمال الوحدة الترابية",
+      questions: [
+        "اذكر أهم معارك المقاومة المسلحة وزعماءها (الهيبة، الزياني، الخطابي، باسلام).",
+        "ما هي عوامل فشل المقاومة المسلحة المغربية؟",
+        "ما هو دور «الظهير البربري» 1930 في نشأة الحركة الوطنية؟",
+        "اذكر بعض الوسائل التي اعتمدتها الحركة الوطنية في نضالها السلمي.",
+        "قارن بين «مطالب الإصلاحات» (1934) و«المطالبة بالاستقلال» (1944).",
+        "كيف ساهم لقاء «أنفا» والحرب العالمية الثانية في تحول مواقف الحركة الوطنية؟",
+        "ما هي أسباب اندلاع «ثورة الملك والشعب» 1953؟",
+        "وضح دور الكفاح المسلح (العمليات الفدائية وجيش التحرير) في نيل الاستقلال.",
+        "تتبع مراحل استكمال الوحدة الترابية من 1956 إلى 1979 (طرفاية، سيدي إفني، الساقية الحمراء، وادي الذهب)."
+      ]
+    }
+  ],
+  geo: [
+    {
+      title: "الدرس الأول: مفهوم التنمية (أنواعها، مقارباتها، والتقسيمات الكبرى)",
+      questions: [
+        "عرف مفهوم «التنمية» وميز بين التنمية الاقتصادية والتنمية البشرية.",
+        "ما هي المؤشرات المعتمدة في قياس مؤشر التنمية البشرية (IDH)؟",
+        "اذكر ثلاث مقاربات لدراسة التنمية (المقاربة الديمغرافية، السياسية، البيئية).",
+        "ما هي المعايير المعتمدة في تقسيم العالم إلى دول «الشمال» ودول «الجنوب»؟",
+        "صنف دول العالم حسب مستويات التنمية البشرية (عالية، متوسطة، ضعيفة).",
+        "ما هي الانتقادات الموجهة للاعتماد على «الناتج الداخلي الخام» كمعيار وحيد للتنمية؟",
+        "وضح العلاقة بين النمو الديمغرافي ومستوى التنمية في دول الجنوب.",
+        "اذكر أهم التحديات التي تواجه التنمية المستدامة في الوقت الراهن.",
+        "كيف يساهم التعليم في الرفع من مؤشر التنمية البشرية؟",
+        "ما هي المجالات الجغرافية التي تدخل ضمن دول «الجنوب» الصاعدة؟"
+      ]
+    },
+    {
+      title: "الدرس الثاني: المجال المغربي (الموارد الطبيعية والبشرية)",
+      questions: [
+        "ما هي وضعية الموارد المائية في المغرب وما هي أسباب تراجعها؟",
+        "صنف الموارد الطاقية والمعدنية في المغرب وأبرز مناطق تركزها.",
+        "ما هي أهم التحديات التي تواجه الغطاء الغابوي في المجال المغربي؟",
+        "كيف تتوزع الأراضي الزراعية في المغرب وما هي معيقاتها؟",
+        "حلل البنية العمرية للسكان في المغرب (فئة الشباب) وانعكاساتها الاقتصادية.",
+        "ما هي خصائص التوزع المجالي للسكان في المغرب (التفاوت بين الشرق والغرب)؟",
+        "اذكر أهم تدابير الدولة لترشيد استعمال الماء (سياسة السدود، التحويل).",
+        "ما هو دور «المبادرة الوطنية للتنمية البشرية» في تحسين مستوى عيش السكان؟",
+        "كيف تساهم الطاقات المتجددة (نور ورزازات) في تحقيق الأمن الطاقي؟",
+        "ما الفرق بين الموارد المتجددة والموارد غير المتجددة في السياق المغربي؟"
+      ]
+    },
+    {
+      title: "الدرس الثالث: سياسة إعداد التراب الوطني",
+      questions: [
+        "عرف «سياسة إعداد التراب الوطني» وما هي غاياتها الكبرى؟",
+        "ما هي المبادئ الأساسية التي تقوم عليها هذه السياسة (العدالة المجالية، الديمقراطية)؟",
+        "اذكر ثلاثة تحديات تواجه إعداد التراب الوطني (اقتصادية، ديمغرافية، بيئية).",
+        "ما هو دور هذه السياسة في الحد من التفاوتات الجهوية؟",
+        "وضح توجهات سياسة إعداد التراب في المناطق الجبلية والمناطق الصحراوية.",
+        "ما هي «الاختيارات الكبرى» لسياسة إعداد التراب الوطني؟",
+        "كيف تساهم هذه السياسة في تدبير الموارد الطبيعية وحماية البيئة؟",
+        "ما هي الأجهزة والمؤسسات المشرفة على إعداد التراب في المغرب؟",
+        "وضح أهمية «التأهيل الحضري» و«تنمية العالم القروي» في هذه السياسة.",
+        "كيف تدعم سياسة إعداد التراب الوطني الاستثمار والجاذبية الاقتصادية؟"
+      ]
+    },
+    {
+      title: "الدرس الرابع: التهيئة الحضرية والريفية (أزمة المدينة والأرياف)",
+      questions: [
+        "ما هي مظاهر أزمة المدينة المغربية على المستوى الاجتماعي (السكن غير اللائق)؟",
+        "حلل الاختلالات التجهيزية والبيئية التي تعاني منها المدن الكبرى.",
+        "عرف «التهيئة الحضرية» واذكر أهم آلياتها (تصميم التهيئة).",
+        "ما هي مسببات أزمة الأرياف المغربية (العزلة، ضعف الخدمات)؟",
+        "وضح أهمية «برامج التنمية القروية» في تقليص الفوارق بين الريف والمدينة.",
+        "كيف تؤثر الهجرة القروية على استقرار السكان في الأرياف واكتظاظ المدن؟",
+        "ما هو دور «إعداد التراب الوطني» في حل أزمات المجالين الحضري والقروي؟",
+        "اذكر تدابير الدولة لمحاربة السكن العشوائي ودور الصفيح.",
+        "ما هي العوائق الطبيعية والبشرية التي تحول دون تنمية الأرياف؟",
+        "كيف يمكن تحقيق «تنمية ريفية مدمجة» في المغرب؟"
+      ]
+    },
+    {
+      title: "الدرس الخامس: العالم العربي (مشكل الماء وظاهرة التصحر)",
+      questions: [
+        "ما هي الأسباب الطبيعية والبشرية لندرة المياه في العالم العربي؟",
+        "كيف يتوزع المورد المائي جغرافياً في المنطقة العربية (التفاوت بين الدول)؟",
+        "عرف ظاهرة «التصحر» واذكر أهم تجلياتها في العالم العربي.",
+        "ما هي الانعكاسات الاقتصادية والبيئية لمشكل الخصاص المائي؟",
+        "وضح دور «النمو الديمغرافي» السريع في استنزاف الموارد المائية.",
+        "اذكر ثلاث استراتيجيات عربية لمواجهة ندرة المياه (تحلية المياه، السدود).",
+        "كيف يساهم التغير المناخي في تفاقم ظاهرة التصحر؟",
+        "ما هي الجهود الدولية والإقليمية للحد من زحف الرمال؟",
+        "اشرح مفهوم «الأمن المائي» وعلاقته بالسيادة الوطنية للدول العربية.",
+        "كيف يمكن لتقنيات السقي الحديثة أن تساهم في ترشيد استهلاك الماء؟"
+      ]
+    },
+    {
+      title: "الدرس السادس: الولايات المتحدة الأمريكية (قوة اقتصادية عظمى)",
+      questions: [
+        "ما هي المؤهلات الطبيعية التي تجعل من أمريكان قوة فلاحية عالمية؟",
+        "وضح دور «العامل التنظيمي» (الرأسمالية، التركيز الرأسمالي) في قوة الاقتصاد الأمريكي.",
+        "ما هي خصائص الصناعة الأمريكية (مناطق التصنيع القديمة و«حزام الشمس»)؟",
+        "حلل مكانة التجارة الأمريكية في النظام العالمي (تعدد الشركاء).",
+        "ما هي «الميغالوبوليس» وما دورها في الاقتصاد الأمريكي؟",
+        "كيف تساهم التكنولوجيا والبحث العلمي في تطوير المقاولات الأمريكية؟",
+        "اذكر أهم المشاكل الاقتصادية التي تواجهها الولايات المتحدة (الميزان التجاري).",
+        "ما هي التحديات البيئية والطبيعية (الأعاصير، التلوث) في أمريكا؟",
+        "وضح دور الشركات متعددة الجنسيات في بسط النفوذ الاقتصادي الأمريكي.",
+        "كيف تؤثر المنافسة الخارجية (الصين، الاتحاد الأوروبي) على القوة الأمريكية؟"
+      ]
+    },
+    {
+      title: "الدرس السابع: الاتحاد الأوروبي (نحو اندماج شامل)",
+      questions: [
+        "ما هي مراحل تأسيس الاتحاد الأوروبي (من معاهدة روما إلى ماستريخت)؟",
+        "اذكر ثلاثة شروط للانضمام إلى الاتحاد الأوروبي (شروط كوبنهاجن).",
+        "ما هي مظاهر الاندماج الاقتصادي والمالي (السوق الوحيدة، اليورو)؟",
+        "وضح أهمية «اتفاقية شينغن» في الاندماج البشري والاجتماعي.",
+        "ما هو دور «السياسة الفلاحية المشتركة» في تحقيق الأمن الغذائي الأوروبي؟",
+        "اذكر بعض المؤسسات المسيرة للاتحاد الأوروبي (البرلمان، المفوضية).",
+        "ما هي معيقات الاندماج الشامل داخل الاتحاد (التفاوت الاقتصادي بين الدول)؟",
+        "كيف واجه الاتحاد الأوروبي أزمة الديون والأزمات المالية؟",
+        "وضح انعكاس خروج بريطانيا (Brexit) على تماسك الاتحاد.",
+        "ما هي آفاق الاندماج السياسي والعسكري المشترك؟"
+      ]
+    },
+    {
+      title: "الدرس الثامن: الصين (قوة اقتصادية صاعدة)",
+      questions: [
+        "ما هي مظاهر النمو الاقتصادي الصيني في العقود الأخيرة؟",
+        "وضح دور «المرحلة الاشتراكية» (ماو تسي تونغ) في وضع أسس الاقتصاد.",
+        "كيف ساهمت «سياسة الانفتاح» (دينغ شياو بينغ) في تحويل الصين إلى «معمل العالم»؟",
+        "ما هي المؤهلات البشرية (السوق الاستهلاكية، اليد العاملة) التي تتوفر عليها الصين؟",
+        "حلل التوزع المجالي للصناعة الصينية (الواجهة الساحلية الشرقية).",
+        "ما هي التحديات البيئية الناتجة عن النمو الصناعي السريع في الصين؟",
+        "كيف تساهم الاستثمارات الأجنبية في تعزيز القوة الاقتصادية الصينية؟",
+        "اذكر التفاوتات المجالية بين الشرق والغرب (الصين الغنية والصين الفقيرة).",
+        "ما هي طبيعة المشاكل الاجتماعية التي تواجه المجتمع الصيني (الشيخوخة)؟",
+        "كيف تنافس الصين القوى التقليدية (أمريكا واليابان) في الأسواق العالمية؟"
+      ]
+    }
+  ]
+};
+
+// State
+const answered = { history: new Set(), geo: new Set() };
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+    const tabs = ['home','history','geo'];
+    b.classList.toggle('active', tabs[i] === tab);
+  });
+  document.querySelectorAll('.subject-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + (tab === 'history' ? 'history' : tab === 'geo' ? 'geo' : 'home')).classList.add('active');
+}
+
+function buildLessons(subject) {
+  const container = document.getElementById(subject === 'history' ? 'history-lessons' : 'geo-lessons');
+  container.innerHTML = '';
+  DATA[subject].forEach((lesson, li) => {
+    const card = document.createElement('div');
+    card.className = 'lesson-card';
+    card.dataset.lesson = li;
+
+    const header = document.createElement('div');
+    header.className = 'lesson-header';
+    header.innerHTML = `
+      <div class="lesson-title-wrap">
+        <div class="lesson-num">${li + 1}</div>
+        <h3>${lesson.title}</h3>
+      </div>
+      <span class="chevron">▼</span>
+    `;
+    header.onclick = () => {
+      card.classList.toggle('open');
+    };
+
+    const body = document.createElement('div');
+    body.className = 'lesson-body';
+    const ul = document.createElement('ul');
+    ul.className = 'questions-list';
+
+    lesson.questions.forEach((q, qi) => {
+      const key = `${subject}-${li}-${qi}`;
+      const li_el = document.createElement('li');
+      li_el.className = 'question-item' + (answered[subject].has(key) ? ' answered' : '');
+      li_el.dataset.key = key;
+      li_el.innerHTML = `
+        <span class="q-num">س${qi + 1}</span>
+        <span class="q-text">${q}</span>
+        <div class="q-check">${answered[subject].has(key) ? '✓' : ''}</div>
+      `;
+      li_el.onclick = () => toggleAnswered(subject, key, li_el);
+      ul.appendChild(li_el);
+    });
+
+    body.appendChild(ul);
+    card.appendChild(header);
+    card.appendChild(body);
+    container.appendChild(card);
+  });
+}
+
+function toggleAnswered(subject, key, el) {
+  if (answered[subject].has(key)) {
+    answered[subject].delete(key);
+    el.classList.remove('answered');
+    el.querySelector('.q-check').textContent = '';
+  } else {
+    answered[subject].add(key);
+    el.classList.add('answered');
+    el.querySelector('.q-check').textContent = '✓';
+  }
+  updateProgress(subject);
+  updateGlobalStats();
+}
+
+function updateProgress(subject) {
+  const total = DATA[subject].reduce((s, l) => s + l.questions.length, 0);
+  const done = answered[subject].size;
+  const pct = total > 0 ? Math.round(done / total * 100) : 0;
+  const prefix = subject === 'history' ? 'hist' : 'geo';
+  document.getElementById(prefix + '-progress-text').textContent = `${done} / ${total}`;
+  document.getElementById(prefix + '-bar').style.width = pct + '%';
+}
+
+function updateGlobalStats() {
+  const total = DATA.history.reduce((s,l)=>s+l.questions.length,0) + DATA.geo.reduce((s,l)=>s+l.questions.length,0);
+  const done = answered.history.size + answered.geo.size;
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-done').textContent = done;
+  document.getElementById('stat-pct').textContent = Math.round(done/total*100) + '%';
+}
+
+function filterQuestions(subject, val) {
+  const v = val.trim().toLowerCase();
+  const container = document.getElementById(subject === 'history' ? 'history-lessons' : 'geo-lessons');
+  const noRes = document.getElementById(subject === 'history' ? 'hist-no-results' : 'geo-no-results');
+  let anyVisible = false;
+
+  container.querySelectorAll('.lesson-card').forEach(card => {
+    const li_idx = card.dataset.lesson;
+    const lesson = DATA[subject][li_idx];
+    let lessonMatch = lesson.title.toLowerCase().includes(v);
+    let qVisible = 0;
+
+    card.querySelectorAll('.question-item').forEach(qi => {
+      const txt = qi.querySelector('.q-text').textContent.toLowerCase();
+      const show = !v || txt.includes(v) || lessonMatch;
+      qi.style.display = show ? '' : 'none';
+      if (show) qVisible++;
+    });
+
+    const show = !v || lessonMatch || qVisible > 0;
+    card.style.display = show ? '' : 'none';
+    if (show) { anyVisible = true; if (v) card.classList.add('open'); }
+  });
+
+  noRes.style.display = anyVisible ? 'none' : 'block';
+}
+
+// Init
+buildLessons('history');
+buildLessons('geo');
+updateProgress('history');
+updateProgress('geo');
+updateGlobalStats();
+</script>
+</body>
+</html>

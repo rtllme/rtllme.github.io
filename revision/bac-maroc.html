@@ -1,0 +1,1798 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MaCrévision — Examens Régionaux 1Bac Maroc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #0a2218;
+    --green-mid: #143d2a;
+    --green-light: #1d5c3d;
+    --gold: #c8a93e;
+    --gold-light: #e2c96b;
+    --gold-dim: #9a7f2a;
+    --cream: #f5f0e8;
+    --cream-dim: #e8e1d4;
+    --text: #f0ead8;
+    --text-muted: #b0a88a;
+    --card-bg: rgba(255,255,255,0.04);
+    --card-border: rgba(200,169,62,0.2);
+    --red: #c0392b;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: var(--green);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  /* Zellige geometric background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(200,169,62,0.03) 20px, rgba(200,169,62,0.03) 21px),
+      repeating-linear-gradient(-45deg, transparent, transparent 20px, rgba(200,169,62,0.03) 20px, rgba(200,169,62,0.03) 21px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,34,24,0.96);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--card-border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+  .nav-logo {
+    font-family: 'Amiri', serif;
+    font-size: 1.5rem;
+    color: var(--gold);
+    padding: 1rem 0;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+  }
+  .nav-logo span { color: var(--text); font-size: 0.75rem; display: block; font-family: 'Cairo', sans-serif; font-weight: 300; letter-spacing: 0.1em; text-transform: uppercase; }
+  .nav-tabs {
+    display: flex;
+    gap: 0.25rem;
+    overflow-x: auto;
+    flex: 1;
+    scrollbar-width: none;
+  }
+  .nav-tab {
+    padding: 0.6rem 1.1rem;
+    border: none;
+    background: none;
+    color: var(--text-muted);
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .nav-tab:hover { color: var(--gold-light); background: rgba(200,169,62,0.07); }
+  .nav-tab.active { color: var(--gold); background: rgba(200,169,62,0.12); }
+  .star-badge {
+    background: var(--gold);
+    color: var(--green);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 20px;
+    margin-left: 4px;
+    vertical-align: middle;
+  }
+
+  /* ─── PAGES ─── */
+  .page { display: none; position: relative; z-index: 1; }
+  .page.active { display: block; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+
+  /* ─── HOME PAGE ─── */
+  .hero {
+    text-align: center;
+    padding: 5rem 2rem 3rem;
+    position: relative;
+  }
+  .hero-eyebrow {
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+  .hero h1 {
+    font-family: 'Amiri', serif;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    color: var(--cream);
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+  .hero h1 em { color: var(--gold); font-style: normal; }
+  .hero p {
+    max-width: 600px;
+    margin: 0 auto 2.5rem;
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+  }
+  .stat { text-align: center; }
+  .stat-num { font-family: 'Amiri', serif; font-size: 2.5rem; color: var(--gold); display: block; }
+  .stat-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .hero-search {
+    max-width: 560px;
+    margin: 0 auto;
+    display: flex;
+    gap: 0.75rem;
+  }
+  .hero-search input {
+    flex: 1;
+    padding: 0.85rem 1.2rem;
+    border: 1px solid var(--card-border);
+    background: rgba(255,255,255,0.05);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .hero-search input::placeholder { color: var(--text-muted); }
+  .hero-search input:focus { border-color: var(--gold); }
+  .btn {
+    padding: 0.85rem 1.6rem;
+    border-radius: var(--radius);
+    border: none;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-gold { background: var(--gold); color: var(--green); }
+  .btn-gold:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .btn-outline { background: transparent; color: var(--gold); border: 1px solid var(--gold); }
+  .btn-outline:hover { background: rgba(200,169,62,0.1); }
+  .btn-sm { padding: 0.5rem 1rem; font-size: 0.82rem; }
+
+  /* Quick Access Cards */
+  .section-title {
+    font-family: 'Amiri', serif;
+    font-size: 1.8rem;
+    color: var(--cream);
+    margin-bottom: 0.5rem;
+  }
+  .section-subtitle { color: var(--text-muted); margin-bottom: 1.8rem; font-size: 0.9rem; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+  .grid-4 { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1rem; }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 1.4rem;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .card:hover { border-color: var(--gold); background: rgba(200,169,62,0.06); transform: translateY(-2px); }
+  .card-icon { font-size: 1.8rem; margin-bottom: 0.8rem; }
+  .card h3 { font-size: 1rem; font-weight: 600; color: var(--cream); margin-bottom: 0.3rem; }
+  .card p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; }
+  .card-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-top: 0.7rem;
+  }
+  .tag-green { background: rgba(29,92,61,0.4); color: #6ec994; border: 1px solid rgba(110,201,148,0.3); }
+  .tag-gold { background: rgba(200,169,62,0.2); color: var(--gold-light); border: 1px solid rgba(200,169,62,0.3); }
+  .tag-blue { background: rgba(37,99,235,0.2); color: #93c5fd; border: 1px solid rgba(147,197,253,0.3); }
+  .tag-red { background: rgba(192,57,43,0.2); color: #fca5a5; border: 1px solid rgba(252,165,165,0.3); }
+
+  /* ─── EXAMS PAGE ─── */
+  .filters {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+    align-items: center;
+  }
+  .filter-select {
+    padding: 0.55rem 1rem;
+    border: 1px solid var(--card-border);
+    background: rgba(255,255,255,0.04);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.85rem;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .filter-select:focus { border-color: var(--gold); }
+  .filter-select option { background: var(--green-mid); }
+  .exam-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+  .exam-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 1.2rem;
+    transition: all 0.2s;
+  }
+  .exam-card:hover { border-color: var(--gold); }
+  .exam-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.7rem; }
+  .exam-year { font-family: 'Amiri', serif; font-size: 1.3rem; color: var(--gold); }
+  .exam-session {
+    font-size: 0.72rem;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+  .session-normal { background: rgba(29,92,61,0.3); color: #6ec994; }
+  .session-rattrapage { background: rgba(192,57,43,0.25); color: #fca5a5; }
+  .exam-subject { font-size: 0.95rem; font-weight: 600; color: var(--cream); margin-bottom: 0.3rem; }
+  .exam-region { font-size: 0.8rem; color: var(--text-muted); }
+  .exam-actions { display: flex; gap: 0.5rem; margin-top: 1rem; }
+  .btn-exam { padding: 0.45rem 0.9rem; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 600; border: none; cursor: pointer; font-family: 'Cairo', sans-serif; transition: all 0.2s; text-decoration: none; display: inline-flex; align-items: center; gap: 0.3rem; }
+  .btn-pdf { background: rgba(200,169,62,0.15); color: var(--gold-light); border: 1px solid rgba(200,169,62,0.3); }
+  .btn-pdf:hover { background: rgba(200,169,62,0.25); }
+  .btn-quiz { background: rgba(29,92,61,0.3); color: #6ec994; border: 1px solid rgba(110,201,148,0.3); }
+  .btn-quiz:hover { background: rgba(29,92,61,0.5); }
+
+  /* Count badge */
+  .results-count { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; }
+  .results-count strong { color: var(--gold); }
+
+  /* ─── QUIZ PAGE ─── */
+  .quiz-setup { max-width: 680px; margin: 0 auto; }
+  .quiz-setup .form-group { margin-bottom: 1.2rem; }
+  .quiz-setup label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .quiz-options { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.6rem; }
+  .opt-btn {
+    padding: 0.7rem 0.8rem;
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.83rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    font-weight: 500;
+  }
+  .opt-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .opt-btn.selected { background: rgba(200,169,62,0.15); border-color: var(--gold); color: var(--gold-light); }
+  .quiz-container { max-width: 680px; margin: 0 auto; }
+  .quiz-progress-bar {
+    height: 4px;
+    background: var(--card-border);
+    border-radius: 2px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+  .quiz-progress-fill { height: 100%; background: var(--gold); border-radius: 2px; transition: width 0.4s ease; }
+  .quiz-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; font-size: 0.82rem; color: var(--text-muted); }
+  .quiz-q-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin-bottom: 1.2rem;
+  }
+  .quiz-q-card h3 { font-size: 1.05rem; font-weight: 600; color: var(--cream); line-height: 1.6; margin-bottom: 1.5rem; }
+  .quiz-choices { display: flex; flex-direction: column; gap: 0.7rem; }
+  .choice-btn {
+    padding: 0.9rem 1.2rem;
+    border: 1px solid var(--card-border);
+    background: rgba(255,255,255,0.03);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .choice-btn:hover:not(:disabled) { border-color: var(--gold); background: rgba(200,169,62,0.08); }
+  .choice-btn:disabled { cursor: default; }
+  .choice-btn.correct { border-color: #6ec994; background: rgba(110,201,148,0.12); color: #6ec994; }
+  .choice-btn.wrong { border-color: #fca5a5; background: rgba(252,165,165,0.1); color: #fca5a5; }
+  .choice-letter {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--card-border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.78rem; font-weight: 700; flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .quiz-explanation {
+    padding: 1rem 1.2rem;
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--gold);
+    background: rgba(200,169,62,0.07);
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-top: 0.7rem;
+  }
+  .quiz-score-card {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+  }
+  .score-ring { font-family: 'Amiri', serif; font-size: 5rem; color: var(--gold); display: block; }
+  .score-label { color: var(--text-muted); font-size: 1rem; margin-bottom: 1.5rem; }
+  .score-msg { font-size: 1.2rem; font-weight: 600; color: var(--cream); margin-bottom: 0.5rem; }
+
+  /* Loading spinner */
+  .loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 3rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+  .spinner {
+    width: 40px; height: 40px;
+    border: 3px solid var(--card-border);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .ai-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: rgba(200,169,62,0.12);
+    border: 1px solid rgba(200,169,62,0.3);
+    border-radius: 20px;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.75rem;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ─── FICHES PAGE ─── */
+  .fiches-layout { display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; min-height: 70vh; }
+  .fiches-sidebar {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 1.2rem;
+    height: fit-content;
+    position: sticky;
+    top: 80px;
+  }
+  .fiches-sidebar h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 0.8rem; }
+  .topic-list { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; }
+  .topic-item {
+    padding: 0.6rem 0.8rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--text-muted);
+    border: 1px solid transparent;
+  }
+  .topic-item:hover { color: var(--cream); background: rgba(255,255,255,0.04); }
+  .topic-item.active { color: var(--gold); background: rgba(200,169,62,0.1); border-color: rgba(200,169,62,0.2); }
+  .topic-item .topic-check { float: right; color: #6ec994; font-size: 0.8rem; }
+  .fiche-content {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    min-height: 400px;
+  }
+  .fiche-content h2 { font-family: 'Amiri', serif; font-size: 1.6rem; color: var(--cream); margin-bottom: 1rem; }
+  .fiche-content h3 { font-size: 1rem; font-weight: 600; color: var(--gold); margin: 1.2rem 0 0.5rem; }
+  .fiche-content p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 0.8rem; }
+  .fiche-content ul { padding-left: 1.2rem; margin-bottom: 0.8rem; }
+  .fiche-content ul li { font-size: 0.88rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 0.3rem; }
+  .fiche-content ul li::marker { color: var(--gold); }
+  .fiche-content .highlight-box {
+    padding: 1rem 1.2rem;
+    background: rgba(200,169,62,0.08);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin: 1rem 0;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .fiche-empty { display: flex; align-items: center; justify-content: center; height: 300px; flex-direction: column; gap: 1rem; color: var(--text-muted); text-align: center; }
+  .fiche-empty-icon { font-size: 3rem; opacity: 0.4; }
+
+  /* ─── PROGRESS PAGE ─── */
+  .progress-overview { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+  .progress-stat {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 1.2rem;
+    text-align: center;
+  }
+  .progress-stat .num { font-family: 'Amiri', serif; font-size: 2.2rem; color: var(--gold); }
+  .progress-stat .lbl { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; }
+  .progress-bar-wrap { margin-bottom: 0.4rem; }
+  .progress-bar-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 0.3rem; }
+  .progress-bar-row .subj { color: var(--cream); }
+  .progress-bar-row .pct { color: var(--text-muted); }
+  .prog-bar { height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; margin-bottom: 0.8rem; }
+  .prog-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--gold-dim), var(--gold)); transition: width 0.8s ease; }
+
+  /* Divider */
+  .divider { height: 1px; background: var(--card-border); margin: 2.5rem 0; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .fiches-layout { grid-template-columns: 1fr; }
+    .fiches-sidebar { position: static; }
+    nav { padding: 0 1rem; gap: 1rem; }
+    .hero h1 { font-size: 2rem; }
+    .hero-stats { gap: 2rem; }
+    .container { padding: 1.5rem 1rem; }
+  }
+
+  /* Typing animation for AI content */
+  .typing-cursor::after {
+    content: '|';
+    color: var(--gold);
+    animation: blink 1s infinite;
+  }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+  /* Table for region overview */
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th { padding: 0.7rem 1rem; text-align: left; color: var(--text-muted); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.07em; border-bottom: 1px solid var(--card-border); }
+  td { padding: 0.75rem 1rem; border-bottom: 1px solid rgba(200,169,62,0.07); color: var(--text-muted); }
+  td:first-child { color: var(--cream); font-weight: 500; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .emoji-flag { font-size: 1.1rem; }
+  .subject-chip {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    background: rgba(200,169,62,0.1);
+    color: var(--gold-light);
+    border: 1px solid rgba(200,169,62,0.2);
+    margin: 2px;
+  }
+  .empty-state { text-align: center; padding: 3rem; color: var(--text-muted); }
+  .empty-state .big { font-size: 3rem; margin-bottom: 1rem; opacity: 0.4; }
+
+  /* Quiz loading dots */
+  .dot-loader { display: flex; gap: 6px; }
+  .dot-loader span {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: bounce 1.2s ease-in-out infinite;
+  }
+  .dot-loader span:nth-child(2) { animation-delay: 0.2s; }
+  .dot-loader span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce { 0%, 80%, 100% { transform: scale(0.7); opacity: 0.4; } 40% { transform: scale(1); opacity: 1; } }
+
+  .section { margin-bottom: 3rem; }
+  .tag-filiere { background: rgba(37,99,235,0.15); color: #93c5fd; border: 1px solid rgba(147,197,253,0.2); padding: 2px 8px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; display: inline-block; margin: 2px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    مراجعتي
+    <span>MaCrévision — 1ère BAC Maroc</span>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('home')">🏠 Accueil</button>
+    <button class="nav-tab" onclick="showPage('exams')">📄 Examens</button>
+    <button class="nav-tab" onclick="showPage('quiz')">🎯 Quiz IA <span class="star-badge">IA</span></button>
+    <button class="nav-tab" onclick="showPage('fiches')">📚 Fiches <span class="star-badge">IA</span></button>
+    <button class="nav-tab" onclick="showPage('progress')">📊 Progression</button>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     HOME PAGE
+══════════════════════════════════════════ -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <p class="hero-eyebrow">🇲🇦 الامتحانات الجهوية — 1ère Année BAC</p>
+    <h1>Révisez comme un <em>champion</em><br>du régional</h1>
+    <p>Tous les examens régionaux du Maroc de 2008 à 2025, des quiz générés par IA, et des fiches de révision pour chaque matière — en un seul endroit.</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">1000+</span><span class="stat-label">Examens archivés</span></div>
+      <div class="stat"><span class="stat-num">12</span><span class="stat-label">Régions couvertes</span></div>
+      <div class="stat"><span class="stat-num">17 ans</span><span class="stat-label">D'archives (2008–2025)</span></div>
+      <div class="stat"><span class="stat-num">∞</span><span class="stat-label">Quiz générés par IA</span></div>
+    </div>
+    <div class="hero-search">
+      <input type="text" id="globalSearch" placeholder="Rechercher une matière, région, année..." oninput="handleGlobalSearch(this.value)">
+      <button class="btn btn-gold" onclick="showPage('exams')">Chercher →</button>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- Quick Access: Subjects -->
+    <div class="section">
+      <div class="section-title">Matières</div>
+      <div class="section-subtitle">Cliquez pour accéder aux examens d'une matière</div>
+      <div class="grid-4">
+        <div class="card" onclick="filterAndGoToExams('subject','Français')">
+          <div class="card-icon">📖</div>
+          <h3>Français</h3>
+          <p>La Boîte à Merveilles, Antigone, Le Dernier Jour d'un Condamné. Production écrite, langue.</p>
+          <span class="card-tag tag-green">Sciences</span>
+        </div>
+        <div class="card" onclick="filterAndGoToExams('subject','Éducation Islamique')">
+          <div class="card-icon">☪️</div>
+          <h3>Éducation Islamique</h3>
+          <p>التربية الإسلامية — Aqida, Fiqh, Sirah, Quran. Matière obligatoire aux sciences.</p>
+          <span class="card-tag tag-green">Sciences</span>
+        </div>
+        <div class="card" onclick="filterAndGoToExams('subject','Histoire-Géographie')">
+          <div class="card-icon">🗺️</div>
+          <h3>Histoire-Géographie</h3>
+          <p>Mondialisation, décolonisation, géopolitique, géographie physique et humaine du Maroc.</p>
+          <span class="card-tag tag-green">Sciences</span>
+        </div>
+        <div class="card" onclick="filterAndGoToExams('subject','Arabe')">
+          <div class="card-icon">✍️</div>
+          <h3>اللغة العربية</h3>
+          <p>نصوص أدبية وتعبير كتابي وقواعد اللغة العربية للسنة الأولى باكالوريا.</p>
+          <span class="card-tag tag-green">Sciences</span>
+        </div>
+        <div class="card" onclick="filterAndGoToExams('subject','Mathématiques')">
+          <div class="card-icon">∑</div>
+          <h3>Mathématiques</h3>
+          <p>Analyse, algèbre, probabilités, suites, géométrie analytique. SM & SE.</p>
+          <span class="card-tag tag-green">Sciences</span>
+        </div>
+        <div class="card" onclick="filterAndGoToExams('subject','Physique-Chimie')">
+          <div class="card-icon">⚗️</div>
+          <h3>Physique-Chimie</h3>
+          <p>Mécanique, optique, électricité, chimie organique et inorganique.</p>
+          <span class="card-tag tag-green">Sciences</span>
+        </div>
+        <div class="card" onclick="filterAndGoToExams('subject','SVT')">
+          <div class="card-icon">🧬</div>
+          <h3>SVT</h3>
+          <p>Biologie cellulaire, génétique, géologie, immunologie et écologie.</p>
+          <span class="card-tag tag-green">Sciences Exp.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Regions -->
+    <div class="section">
+      <div class="section-title">Les 12 Régions du Maroc</div>
+      <div class="section-subtitle">Chaque région produit ses propres sujets d'examen</div>
+      <div class="grid-3">
+        <div id="regions-grid"></div>
+      </div>
+      <div id="regions-cards"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Feature Cards -->
+    <div class="section">
+      <div class="section-title">Outils de révision IA</div>
+      <div class="section-subtitle">Propulsé par l'intelligence artificielle Claude</div>
+      <div class="grid-2">
+        <div class="card" onclick="showPage('quiz')" style="border-color: rgba(110,201,148,0.3);">
+          <div class="card-icon">🎯</div>
+          <h3>Quiz Génératif IA</h3>
+          <p>Choisissez votre matière et votre niveau. L'IA génère des questions originales basées sur le programme du régional, avec des corrections détaillées.</p>
+          <span class="card-tag tag-green">Illimité • Adaptatif</span>
+        </div>
+        <div class="card" onclick="showPage('fiches')" style="border-color: rgba(147,197,253,0.3);">
+          <div class="card-icon">📋</div>
+          <h3>Fiches de Révision IA</h3>
+          <p>Fiches condensées et intelligentes pour chaque chapitre et chaque œuvre. L'IA synthétise l'essentiel du programme.</p>
+          <span class="card-tag tag-blue">Condensé • Structuré</span>
+        </div>
+        <div class="card" onclick="showPage('exams')" style="border-color: rgba(200,169,62,0.3);">
+          <div class="card-icon">📄</div>
+          <h3>Archive Complète (2008–2025)</h3>
+          <p>Accédez à tous les examens régionaux avec filtres par année, région, matière et filière. Liens directs vers les PDF.</p>
+          <span class="card-tag tag-gold">1000+ examens</span>
+        </div>
+        <div class="card" onclick="showPage('progress')" style="border-color: rgba(255,255,255,0.1);">
+          <div class="card-icon">📊</div>
+          <h3>Suivi de Progression</h3>
+          <p>Visualisez votre progression par matière, suivez vos scores de quiz et identifiez vos points faibles.</p>
+          <span class="card-tag tag-gold">Personnalisé</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     EXAMS PAGE
+══════════════════════════════════════════ -->
+<div id="page-exams" class="page">
+  <div class="container">
+    <div style="margin-bottom:1.5rem;">
+      <div class="section-title">Archive des Examens Régionaux</div>
+      <div class="section-subtitle">Filtrez par année, région, matière et filière — liens PDF vers jihawi.page & alloschool</div>
+    </div>
+
+    <div class="filters">
+      <select class="filter-select" id="f-year" onchange="applyFilters()">
+        <option value="">Toutes les années</option>
+      </select>
+      <select class="filter-select" id="f-region" onchange="applyFilters()">
+        <option value="">Toutes les régions</option>
+      </select>
+      <select class="filter-select" id="f-subject" onchange="applyFilters()">
+        <option value="">Toutes les matières</option>
+      </select>
+      <select class="filter-select" id="f-session" onchange="applyFilters()">
+        <option value="">Toutes les sessions</option>
+        <option value="Normale">Session normale</option>
+        <option value="Rattrapage">Rattrapage</option>
+      </select>
+      <button class="btn btn-outline btn-sm" onclick="resetFilters()">✕ Réinitialiser</button>
+    </div>
+
+    <div id="results-count" class="results-count"></div>
+    <div id="exam-grid" class="exam-grid"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     QUIZ PAGE
+══════════════════════════════════════════ -->
+<div id="page-quiz" class="page">
+  <div class="container">
+
+    <div id="quiz-setup" class="quiz-setup">
+      <div class="ai-badge">✦ Propulsé par Claude AI</div>
+      <div class="section-title">Quiz Génératif IA</div>
+      <div class="section-subtitle">L'IA génère des questions originales basées sur le programme 1Bac</div>
+
+      <div class="form-group">
+        <label>Matière</label>
+        <div class="quiz-options" id="quiz-subject-opts"></div>
+      </div>
+
+      <div class="form-group" style="margin-top:1.2rem;">
+        <label>Nombre de questions</label>
+        <div class="quiz-options">
+          <button class="opt-btn selected" id="nq-5" onclick="selectNQ(5)">5 questions</button>
+          <button class="opt-btn" id="nq-10" onclick="selectNQ(10)">10 questions</button>
+          <button class="opt-btn" id="nq-15" onclick="selectNQ(15)">15 questions</button>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top:1.2rem;">
+        <label>Difficulté</label>
+        <div class="quiz-options">
+          <button class="opt-btn selected" id="diff-facile" onclick="selectDiff('Facile')">🟢 Facile</button>
+          <button class="opt-btn" id="diff-moyen" onclick="selectDiff('Moyen')">🟡 Moyen</button>
+          <button class="opt-btn" id="diff-difficile" onclick="selectDiff('Difficile')">🔴 Difficile</button>
+        </div>
+      </div>
+
+      <div style="margin-top:2rem;">
+        <button class="btn btn-gold" id="start-quiz-btn" onclick="startQuiz()" style="width:100%;padding:1rem;font-size:1rem;">
+          🎯 Générer le quiz avec l'IA →
+        </button>
+      </div>
+    </div>
+
+    <div id="quiz-loading" style="display:none;">
+      <div class="loading">
+        <div class="dot-loader"><span></span><span></span><span></span></div>
+        <p>L'IA prépare vos questions...</p>
+      </div>
+    </div>
+
+    <div id="quiz-play" class="quiz-container" style="display:none;">
+      <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quiz-prog-fill"></div></div>
+      <div class="quiz-meta">
+        <span id="quiz-meta-subj"></span>
+        <span id="quiz-q-counter"></span>
+      </div>
+      <div id="quiz-q-area"></div>
+      <div style="margin-top:1rem;">
+        <button class="btn btn-gold" id="quiz-next-btn" onclick="nextQuestion()" style="display:none;">Question suivante →</button>
+        <button class="btn btn-gold" id="quiz-finish-btn" onclick="finishQuiz()" style="display:none;">Voir les résultats →</button>
+      </div>
+    </div>
+
+    <div id="quiz-results" class="quiz-container" style="display:none;"></div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     FICHES PAGE
+══════════════════════════════════════════ -->
+<div id="page-fiches" class="page">
+  <div class="container">
+    <div style="margin-bottom:1.5rem;">
+      <div class="ai-badge">✦ Fiches générées par Claude AI</div>
+      <div class="section-title">Fiches de Révision</div>
+      <div class="section-subtitle">Sélectionnez un chapitre — l'IA génère une fiche condensée et structurée</div>
+    </div>
+
+    <div class="fiches-layout">
+      <div class="fiches-sidebar">
+        <div id="fiches-subject-selector" style="margin-bottom:1rem;">
+          <select class="filter-select" style="width:100%" id="fiche-matiere" onchange="updateTopicList()">
+            <option value="">Choisir une matière...</option>
+          </select>
+        </div>
+        <h4>Chapitres & Œuvres</h4>
+        <ul class="topic-list" id="topic-list">
+          <li style="color:var(--text-muted);font-size:0.82rem;padding:0.5rem;">← Sélectionnez une matière</li>
+        </ul>
+      </div>
+      <div class="fiche-content" id="fiche-content">
+        <div class="fiche-empty">
+          <div class="fiche-empty-icon">📋</div>
+          <p>Sélectionnez un chapitre pour générer une fiche de révision avec l'IA</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PROGRESS PAGE
+══════════════════════════════════════════ -->
+<div id="page-progress" class="page">
+  <div class="container">
+    <div class="section-title">Ma Progression</div>
+    <div class="section-subtitle">Suivez vos quiz et les matières révisées</div>
+
+    <div class="progress-overview" id="prog-overview"></div>
+
+    <div class="divider"></div>
+
+    <div class="section-title" style="font-size:1.3rem;margin-bottom:1rem;">Scores par matière</div>
+    <div id="prog-subjects" style="max-width:600px;"></div>
+
+    <div class="divider"></div>
+
+    <div class="section-title" style="font-size:1.3rem;margin-bottom:1rem;">Historique des quiz</div>
+    <div id="quiz-history-list"></div>
+
+    <div style="margin-top:2rem;">
+      <button class="btn btn-outline btn-sm" onclick="resetProgress()">🗑️ Réinitialiser la progression</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════
+const REGIONS = [
+  { id:'tth', name:'Tanger-Tétouan-Al Hoceïma', short:'Tanger-Tétouan', code:'TTH', emoji:'🌊' },
+  { id:'ori', name:'Oriental', short:'Oriental', code:'ORI', emoji:'🏜️' },
+  { id:'fm', name:'Fès-Meknès', short:'Fès-Meknès', code:'FM', emoji:'🕌' },
+  { id:'rsk', name:'Rabat-Salé-Kénitra', short:'Rabat-Salé', code:'RSK', emoji:'🏛️' },
+  { id:'bmk', name:'Béni Mellal-Khénifra', short:'Béni Mellal', code:'BMK', emoji:'⛰️' },
+  { id:'cs', name:'Casablanca-Settat', short:'Casablanca', code:'CS', emoji:'🏙️' },
+  { id:'ms', name:'Marrakech-Safi', short:'Marrakech', code:'MS', emoji:'🌹' },
+  { id:'dt', name:'Drâa-Tafilalet', short:'Drâa-Tafilalet', code:'DT', emoji:'🌴' },
+  { id:'sm', name:'Souss-Massa', short:'Souss-Massa', code:'SM', emoji:'🐊' },
+  { id:'gon', name:'Guelmim-Oued Noun', short:'Guelmim', code:'GON', emoji:'🏝️' },
+  { id:'lsh', name:'Laâyoune-Sakia El Hamra', short:'Laâyoune', code:'LSH', emoji:'☀️' },
+  { id:'dod', name:'Dakhla-Oued Ed-Dahab', short:'Dakhla', code:'DOD', emoji:'🌊' },
+];
+
+const SUBJECTS = [
+  { id:'fr', name:'Français', icon:'📖', filières:['SM','SE'] },
+  { id:'islam', name:'Éducation Islamique', icon:'☪️', filières:['SM','SE'] },
+  { id:'ar', name:'Arabe', icon:'✍️', filières:['SM','SE'] },
+  { id:'hg', name:'Histoire-Géographie', icon:'🗺️', filières:['SM','SE'] },
+  { id:'math', name:'Mathématiques', icon:'∑', filières:['SM','SE'] },
+  { id:'pc', name:'Physique-Chimie', icon:'⚗️', filières:['SM','SE'] },
+  { id:'svt', name:'SVT', icon:'🧬', filières:['SE'] },
+  { id:'en', name:'Anglais', icon:'🇬🇧', filières:['SM','SE'] },
+];
+
+const YEARS = Array.from({length:18}, (_,i) => 2008+i).reverse(); // 2025 to 2008
+
+// Generate exam data
+function generateExams() {
+  const exams = [];
+  // For each year, generate exams for all regions and main subjects
+  YEARS.forEach(year => {
+    const sessions = year >= 2015 ? ['Normale','Rattrapage'] : ['Normale'];
+    sessions.forEach(session => {
+      REGIONS.forEach(region => {
+        SUBJECTS.forEach(subject => {
+          // Link pattern to jihawi.page with better parameters
+          const regionSlug = region.code.toLowerCase();
+          const subjectSlug = subject.name.toLowerCase()
+            .replace(/français/i, 'francais')
+            .replace(/arabe/i, 'arabe')
+            .replace(/histoire-géographie/i, 'histoire-geographie')
+            .replace(/éducation islamique/i, 'education-islamique')
+            .replace(/mathématiques/i, 'mathematiques')
+            .replace(/physique-chimie/i, 'physique-chimie')
+            .replace(/anglais/i, 'anglais')
+            .replace(/svt/i, 'svt')
+            .replace(/[^a-z0-9-]/g, '-')
+            .replace(/-+/g, '-');
+          const sessionCode = session === 'Normale' ? 'normal' : 'rattrapage';
+          exams.push({
+            id: `${year}-${region.id}-${subject.id}-${session}`,
+            year,
+            region: region.name,
+            regionId: region.id,
+            regionEmoji: region.emoji,
+            subject: subject.name,
+            subjectIcon: subject.icon,
+            session,
+            pdfUrl: `https://jihawi.page/examens?year=${year}&region=${regionSlug}&subject=${subjectSlug}&session=${sessionCode}`,
+            jihawi: true
+          });
+        });
+      });
+    });
+  });
+  return exams;
+}
+const ALL_EXAMS = generateExams();
+
+// Topics per subject for fiches
+const TOPICS = {
+  'Français': [
+    'La Boîte à Merveilles — Résumé et contexte',
+    'La Boîte à Merveilles — Personnages principaux',
+    'La Boîte à Merveilles — Thèmes: enfance, tradition',
+    'Antigone (Anouilh) — Résumé et structure',
+    'Antigone — Le conflit: conscience vs loi',
+    'Antigone — Personnages et symbolisme',
+    'Antigone — Allégorie de la Résistance',
+    'Le Dernier Jour d\'un Condamné — Résumé',
+    'Le Dernier Jour d\'un Condamné — Anti-peine de mort',
+    'Le Dernier Jour d\'un Condamné — Style & narrateur',
+    'Production écrite — Plan dialectique (Thèse/Antithèse/Synthèse)',
+    'Production écrite — Plan analytique (Problème/Causes/Solutions)',
+    'Production écrite — Connecteurs logiques',
+    'Figures de style — Métaphore, comparaison, personnification',
+    'Figures de style — Hyperbole, ironie, oxymore',
+    'Figures de style — Allitération, assonance, antithèse',
+    'Langue — Types de textes (narratif, descriptif, argumentatif)',
+    'Langue — Énonciation & point de vue',
+  ],
+  'Éducation Islamique': [
+    'أركان الإيمان الستة',
+    'الركن الأول: الإيمان بالله (التوحيد)',
+    'الركن الثاني: الإيمان بالملائكة',
+    'الركن الثالث: الإيمان بكتب الله',
+    'الركن الرابع: الإيمان بالرسل والأنبياء',
+    'الركن الخامس: الإيمان باليوم الآخر',
+    'الركن السادس: الإيمان بالقدر',
+    'أركان الإسلام الخمسة: الشهادة',
+    'أركان الإسلام: الصلاة (أوقاتها وأركانها)',
+    'أركان الإسلام: الزكاة (الواجبات)',
+    'أركان الإسلام: الصيام والحكمة منه',
+    'أركان الإسلام: الحج (الأركان)',
+    'السيرة النبوية — مرحلة ما قبل الدعوة',
+    'السيرة — مرحلة مكة (13 سنة)',
+    'السيرة — الهجرة النبوية',
+    'السيرة — مرحلة المدينة وبناء الدولة',
+    'السيرة — الغزوات الكبرى',
+    'السيرة — فتح مكة والتكوين الروحي',
+    'القرآن الكريم — مميزاته وحفظه',
+    'الحديث النبوي — الصحيح والضعيف',
+    'الأخلاق الإسلامية — العدل',
+    'الأخلاق — الرحمة والعطف',
+    'الأخلاق — الصدق والأمانة',
+    'الأخلاق — الشجاعة والتسامح',
+  ],
+  'Histoire-Géographie': [
+    'الحرب العالمية الأولى (1914-1918) — الأسباب',
+    'الحرب العالمية الأولى — المعارك والجبهات',
+    'الحرب العالمية الأولى — الدول المتحاربة',
+    'معاهدة فرساي (1919) — الشروط على ألمانيا',
+    'الحرب العالمية الثانية (1939-1945) — الأسباب',
+    'الحرب العالمية الثانية — المحور والحلفاء',
+    'الحرب العالمية الثانية — النازية والفاشية',
+    'الحرب العالمية الثانية — الهولوكوست',
+    'الحرب العالمية الثانية — الانتصار والهزيمة',
+    'المنظمة الأممية المتحدة (ONU) — التأسيس والأهداف',
+    'الحرب الباردة (1945-1991) — الأسباب والتقسيم',
+    'الحرب الباردة — الاتحاد السوفييتي والولايات المتحدة',
+    'الحرب الباردة — الأزمات الكبرى',
+    'نهاية الحرب الباردة — سقوط الاتحاد السوفييتي',
+    'تحرر الشعوب من الاستعمار — الهند',
+    'تحرر الشعوب — إفريقيا الشمالية',
+    'تحرر الشعوب — المغرب والاستقلال',
+    'جغرافيا المغرب — التضاريس والمناخ',
+    'جغرافيا المغرب — السكان والتوزيع',
+    'جغرافيا المغرب — الموارد الطبيعية',
+    'جغرافيا المغرب — الاقتصاد والتنمية',
+  ],
+  'Philosophie': [
+    'La connaissance — Vérité et certitude',
+    'Les droits et les devoirs',
+    'Le travail et la technique',
+    'La liberté — Fondements et limites',
+    'L\'art — Définition et fonctions',
+    'La morale — Fondements éthiques',
+    'L\'État et le pouvoir politique',
+    'La justice et l\'égalité',
+  ],
+  'Mathématiques': [
+    'Suites numériques — Arithmétiques et géométriques',
+    'Limites et continuité des fonctions',
+    'Dérivabilité et étude de fonctions',
+    'Fonctions logarithmes et exponentielles',
+    'Fonctions trigonométriques',
+    'Calcul intégral',
+    'Probabilités et statistiques',
+    'Nombres complexes',
+    'Géométrie dans l\'espace',
+    'Calcul vectoriel et analytique',
+  ],
+  'Physique-Chimie': [
+    'Mécanique — Lois de Newton',
+    'Mécanique — Énergie et travail',
+    'Électricité — Dipôles RC et RL',
+    'Électricité — Circuits en régime sinusoïdal',
+    'Optique — Réflexion et réfraction',
+    'Optique — Lentilles convergentes',
+    'Chimie — Réactions acide-base',
+    'Chimie — Réactions d\'oxydo-réduction',
+    'Chimie organique — Alcools et acides',
+  ],
+  'SVT': [
+    'La cellule — Structure et fonctions',
+    'La division cellulaire — Mitose et méiose',
+    'La génétique — Lois de Mendel',
+    'L\'immunologie — Défenses de l\'organisme',
+    'La géologie — Tectonique des plaques',
+    'Les êtres vivants et leur milieu',
+    'La digestion et nutrition',
+    'La respiration et échanges gazeux',
+  ],
+  'Arabe': [
+    'النصوص الأدبية — الشعر الحديث والمعاصر',
+    'الشعر — الشعراء الرومانسيون',
+    'الشعر — الشعراء الواقعيون',
+    'الشعر — الرموز والصور البيانية',
+    'النثر الأدبي — القصة القصيرة',
+    'النثر — الرواية والبنية',
+    'النثر — الخطابة والمقالة',
+    'المسرح العربي — النشأة والتطور',
+    'المسرح — الكوميديا والتراجيديا',
+    'القواعد النحوية — الجملة الاسمية والفعلية',
+    'القواعد — الفاعل والمفعول به',
+    'القواعد — الحروف والأفعال',
+    'البلاغة — التشبيه والاستعارة',
+    'البلاغة — المجاز والكناية',
+    'البلاغة — الطباق والجناس',
+    'التعبير الكتابي — السرد والوصف',
+    'التعبير الكتابي — المقالة الأدبية',
+    'التعبير الكتابي — المراسلات الشخصية',
+    'الإملاء والعلامات الترقيمية',
+    'الأسلوب والفصاحة في الكتابة',
+  ],
+  'Anglais': [
+    'Grammar — Present tenses (Simple, Continuous, Perfect)',
+    'Grammar — Past tenses review',
+    'Grammar — Future tenses and conditionals',
+    'Modal verbs — Can, could, may, must',
+    'Modal verbs — Should, would, will',
+    'Reading comprehension — Strategies',
+    'Reading — Identifying main ideas',
+    'Reading — Understanding inference',
+    'Reading — Vocabulary from context',
+    'Writing — Essay structure and organization',
+    'Writing — Introduction, body, conclusion',
+    'Writing — Paragraph development',
+    'Writing — Coherence and cohesion',
+    'Vocabulary — Global issues and environment',
+    'Vocabulary — Technology and innovation',
+    'Vocabulary — Health and wellness',
+    'Vocabulary — Education and careers',
+    'Speaking skills — Fluency and pronunciation',
+    'Speaking — Discussions and debates',
+    'Listening skills — Understanding accents',
+    'Listening — Note-taking strategies',
+    'Culture and society — English-speaking countries',
+    'Literature — Famous writers and works',
+    'Formal vs informal language',
+  ],
+};
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let currentPage = 'home';
+let filteredExams = [...ALL_EXAMS];
+let quizState = {
+  subject: 'Français',
+  nq: 5,
+  difficulty: 'Facile',
+  questions: [],
+  current: 0,
+  answers: [],
+  score: 0
+};
+let progressData = JSON.parse(localStorage.getItem('macrevision_progress') || JSON.stringify({
+  quizzes: [],
+  topicsRead: [],
+  quizScores: {}
+}));
+
+function saveProgress() {
+  localStorage.setItem('macrevision_progress', JSON.stringify(progressData));
+}
+
+// ══════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t => {
+    if(t.textContent.toLowerCase().includes(name === 'home' ? 'accueil' : name === 'quiz' ? 'quiz' : name === 'fiches' ? 'fiches' : name === 'exams' ? 'examens' : 'progression')) {
+      t.classList.add('active');
+    }
+  });
+  currentPage = name;
+  if(name === 'progress') renderProgress();
+  if(name === 'exams') applyFilters();
+}
+
+// ══════════════════════════════════════════
+// HOME PAGE INIT
+// ══════════════════════════════════════════
+function initHome() {
+  const grid = document.getElementById('regions-cards');
+  const html = `<div class="grid-3">` + REGIONS.map(r => `
+    <div class="card" onclick="filterAndGoToExams('region','${r.name}')" style="display:flex;align-items:center;gap:1rem;padding:1rem;">
+      <span style="font-size:1.8rem;">${r.emoji}</span>
+      <div>
+        <div style="font-weight:600;font-size:0.9rem;color:var(--cream);">${r.name}</div>
+        <div style="font-size:0.75rem;color:var(--text-muted);">${SUBJECTS.slice(0,3).map(s=>s.name).join(' · ')}</div>
+      </div>
+    </div>
+  `).join('') + `</div>`;
+  grid.innerHTML = html;
+}
+
+function filterAndGoToExams(type, value) {
+  if(type === 'subject') {
+    document.getElementById('f-subject').value = value;
+  } else if(type === 'region') {
+    document.getElementById('f-region').value = value;
+  }
+  showPage('exams');
+  applyFilters();
+}
+
+function handleGlobalSearch(val) {
+  if(val.length > 2) {
+    showPage('exams');
+    // apply search via filters
+  }
+}
+
+// ══════════════════════════════════════════
+// EXAMS PAGE
+// ══════════════════════════════════════════
+function initExamFilters() {
+  const yearSel = document.getElementById('f-year');
+  YEARS.forEach(y => {
+    const opt = document.createElement('option');
+    opt.value = y;
+    opt.textContent = y;
+    yearSel.appendChild(opt);
+  });
+  const regSel = document.getElementById('f-region');
+  REGIONS.forEach(r => {
+    const opt = document.createElement('option');
+    opt.value = r.name;
+    opt.textContent = r.name;
+    regSel.appendChild(opt);
+  });
+  const subjSel = document.getElementById('f-subject');
+  SUBJECTS.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s.name;
+    opt.textContent = s.name;
+    subjSel.appendChild(opt);
+  });
+}
+
+function applyFilters() {
+  const year = document.getElementById('f-year').value;
+  const region = document.getElementById('f-region').value;
+  const subject = document.getElementById('f-subject').value;
+  const session = document.getElementById('f-session').value;
+  filteredExams = ALL_EXAMS.filter(e => {
+    if(year && e.year != year) return false;
+    if(region && e.region !== region) return false;
+    if(subject && e.subject !== subject) return false;
+    if(session && e.session !== session) return false;
+    return true;
+  });
+  renderExams();
+}
+
+function resetFilters() {
+  ['f-year','f-region','f-subject','f-session'].forEach(id => document.getElementById(id).value = '');
+  applyFilters();
+}
+
+function renderExams() {
+  const grid = document.getElementById('exam-grid');
+  const count = document.getElementById('results-count');
+  const shown = filteredExams.slice(0, 120); // limit for performance
+  count.innerHTML = `<strong>${filteredExams.length}</strong> examens trouvés${filteredExams.length > 120 ? ' (120 affichés — affinez les filtres)' : ''}`;
+
+  if(shown.length === 0) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><div class="big">🔍</div><p>Aucun examen trouvé. Modifiez les filtres.</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = shown.map(e => `
+    <div class="exam-card">
+      <div class="exam-header">
+        <span class="exam-year">${e.year}</span>
+        <span class="exam-session ${e.session === 'Normale' ? 'session-normal' : 'session-rattrapage'}">${e.session}</span>
+      </div>
+      <div class="exam-subject">${e.subjectIcon} ${e.subject}</div>
+      <div class="exam-region">${e.regionEmoji} ${e.region}</div>
+      <div class="exam-actions">
+        <a class="btn-exam btn-pdf" href="${e.pdfUrl}" target="_blank">📄 PDF</a>
+        <button class="btn-exam btn-quiz" onclick="launchQuizFor('${e.subject}')">🎯 Quiz</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function launchQuizFor(subject) {
+  quizState.subject = subject;
+  // pre-select the subject
+  document.querySelectorAll('#quiz-subject-opts .opt-btn').forEach(b => {
+    b.classList.toggle('selected', b.dataset.subject === subject);
+  });
+  showPage('quiz');
+  document.getElementById('quiz-setup').style.display = 'block';
+  document.getElementById('quiz-loading').style.display = 'none';
+  document.getElementById('quiz-play').style.display = 'none';
+  document.getElementById('quiz-results').style.display = 'none';
+}
+
+// ══════════════════════════════════════════
+// QUIZ PAGE
+// ══════════════════════════════════════════
+function initQuizSubjectButtons() {
+  const container = document.getElementById('quiz-subject-opts');
+  container.innerHTML = SUBJECTS.map(s => `
+    <button class="opt-btn ${s.name === 'Français' ? 'selected' : ''}" data-subject="${s.name}" onclick="selectSubject('${s.name}')">
+      ${s.icon} ${s.name}
+    </button>
+  `).join('');
+}
+
+function selectSubject(name) {
+  quizState.subject = name;
+  document.querySelectorAll('#quiz-subject-opts .opt-btn').forEach(b => {
+    b.classList.toggle('selected', b.dataset.subject === name);
+  });
+}
+
+function selectNQ(n) {
+  quizState.nq = n;
+  [5,10,15].forEach(v => document.getElementById('nq-'+v).classList.toggle('selected', v===n));
+}
+
+function selectDiff(d) {
+  quizState.difficulty = d;
+  ['Facile','Moyen','Difficile'].forEach(v => document.getElementById('diff-'+v.toLowerCase()).classList.toggle('selected', v===d));
+}
+
+async function startQuiz() {
+  document.getElementById('quiz-setup').style.display = 'none';
+  document.getElementById('quiz-loading').style.display = 'block';
+  document.getElementById('quiz-play').style.display = 'none';
+  document.getElementById('quiz-results').style.display = 'none';
+
+  try {
+    const prompt = `Tu es un professeur marocain expert en 1ère BAC. Génère exactement ${quizState.nq} questions QCM de niveau ${quizState.difficulty} pour la matière "${quizState.subject}" de l'examen régional 1Bac au Maroc.
+
+Réponds UNIQUEMENT avec un JSON valide (sans aucun autre texte, sans backticks) dans ce format exact:
+{
+  "questions": [
+    {
+      "question": "La question ici",
+      "choices": ["A. Choix 1", "B. Choix 2", "C. Choix 3", "D. Choix 4"],
+      "correct": 0,
+      "explanation": "Explication courte de la bonne réponse"
+    }
+  ]
+}
+
+Important:
+- Les questions doivent être précisément adaptées au programme 1Bac marocain
+- Pour le Français, base-toi sur La Boîte à Merveilles, Antigone, Le Dernier Jour d'un Condamné, ou les points de langue
+- Pour les sciences, utilise les chapitres officiels du programme
+- L'index "correct" est 0-indexé (0=A, 1=B, 2=C, 3=D)
+- Langue des questions: français (sauf pour Arabe et Islamique en arabe)`;
+
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2500,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    let text = data.content.map(c => c.text || '').join('');
+    text = text.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(text);
+    quizState.questions = parsed.questions;
+    quizState.current = 0;
+    quizState.answers = [];
+    quizState.score = 0;
+    startQuizPlay();
+  } catch(e) {
+    console.error(e);
+    // Fallback questions
+    quizState.questions = getFallbackQuestions(quizState.subject, quizState.nq);
+    quizState.current = 0;
+    quizState.answers = [];
+    quizState.score = 0;
+    startQuizPlay();
+  }
+}
+
+function getFallbackQuestions(subject, n) {
+  const banks = {
+    'Français': [
+      { question: "Dans 'La Boîte à Merveilles', quel est le prénom du narrateur enfant ?", choices:["A. Ahmed","B. Sidi Mohammed","C. Hassan","D. Karim"], correct:1, explanation:"Le narrateur s'appelle Sidi Mohammed. C'est l'auteur Ahmed Sefrioui qui raconte son enfance." },
+      { question: "Quel auteur a écrit 'La Boîte à Merveilles' ?", choices:["A. Ali Akika","B. Ahmed Sefrioui","C. Abdellatif Laâbi","D. Mohamed Choukri"], correct:1, explanation:"'La Boîte à Merveilles' a été écrite par Ahmed Sefrioui en 1954. C'est un classique de la littérature marocaine." },
+      { question: "Quelle est la ville principale de 'La Boîte à Merveilles' ?", choices:["A. Marrakech","B. Fès","C. Casablanca","D. Tanger"], correct:1, explanation:"L'histoire se déroule à Fès, dans la Médina de Fès. La ville joue un rôle très important dans le roman." },
+      { question: "Qui est Lalla 'Aïcha dans 'La Boîte à Merveilles' ?", choices:["A. La mère du narrateur","B. La grand-mère","C. Une servante","D. Une voisine"], correct:1, explanation:"Lalla 'Aïcha est la mère de Sidi Mohammed. Elle joue un rôle maternel central dans le récit." },
+      { question: "Quel personnage apprend à lire au narrateur dans 'La Boîte à Merveilles' ?", choices:["A. Son père","B. Fqih Abdessalam","C. Un ami","D. Sa mère"], correct:1, explanation:"Fqih Abdessalam est le maître d'école (fqih) qui enseigne le Coran et la lecture au jeune narrateur." },
+      { question: "Qu'est-ce que 'la boîte à merveilles' dans le roman ?", choices:["A. Une boîte de joyaux","B. Un objet magique qui renferme l'enfance","C. Une vieille valise","D. Un musée"], correct:1, explanation:"La boîte à merveilles est symbolique : elle représente la mémoire de l'enfance et ses merveilles." },
+      { question: "Quelle est l'atmosphère générale de 'La Boîte à Merveilles' ?", choices:["A. Dramatique et triste","B. Nostalgique et poétique","C. Violente et agressive","D. Comique et légère"], correct:1, explanation:"L'atmosphère est nostalgique : l'auteur se souvient avec tendresse de son enfance à Fès." },
+      { question: "En quelle année 'La Boîte à Merveilles' a-t-elle été écrite ?", choices:["A. 1944","B. 1950","C. 1954","D. 1960"], correct:2, explanation:"'La Boîte à Merveilles' a été publiée en 1954. C'est une œuvre majeure de la littérature marocaine du XXe siècle." },
+      { question: "Qui a écrit 'Antigone' au programme 1Bac ?", choices:["A. Sophocle","B. Jean Anouilh","C. Victor Hugo","D. Albert Camus"], correct:1, explanation:"'Antigone' au programme 1Bac est l'adaptation de Jean Anouilh (1944), basée sur le texte de Sophocle." },
+      { question: "Quel est le conflit principal dans 'Antigone' de Jean Anouilh ?", choices:["A. Entre l'amour et le devoir","B. Entre la loi personnelle et la loi de l'État","C. Entre la justice et la vengeance","D. Entre les générations"], correct:1, explanation:"Le conflit central oppose la conscience personnelle d'Antigone aux lois d'État incarnées par Créon." },
+      { question: "Pourquoi Antigone veut-elle enterrer son frère Polynice ?", choices:["A. Pour des raisons politiques","B. Par respect de la loi religieuse et familiale","C. Pour se rebeller contre Créon","D. Pour prouver son courage"], correct:1, explanation:"Antigone refuse de laisser le corps de Polynice sans sépulture, ce qui violerait la loi divine et la piété." },
+      { question: "Quel est le rôle de Créon dans 'Antigone' ?", choices:["A. Le méchant qui tourmente Antigone","B. Le roi qui interdit la sépulture","C. L'ami d'Antigone","D. Le père d'Antigone"], correct:1, explanation:"Créon est le roi qui émet un édit interdisant d'enterrer les traîtres comme Polynice. Il est l'autorité politique." },
+      { question: "Comment 'Antigone' de Jean Anouilh se termine-t-elle ?", choices:["A. Antigone s'enfuit","B. Antigone est exécutée","C. Créon lui pardonne","D. Antigone devient reine"], correct:1, explanation:"Antigone meurt, exécutée. C'est une tragédie où les personnages font face aux conséquences de leurs choix." },
+      { question: "Quel est le thème central de 'Antigone' ?", choices:["A. L'amour et le mariage","B. Le conflit entre le devoir et la conscience","C. L'aventure et l'explorationD. La rivalité fraternelle"], correct:1, explanation:"Le thème central est le conflit tragique entre le devoir civil (la loi) et la conscience morale personnelle." },
+      { question: "Qui est Ismène dans 'Antigone' ?", choices:["A. La mère d'Antigone","B. La soeur d'Antigone","C. La fille de Créon","D. Une servante"], correct:1, explanation:"Ismène est la soeur d'Antigone. Contrairement à Antigone, elle choisit l'obéissance à Créon." },
+      { question: "Victor Hugo a écrit 'Le Dernier Jour d'un Condamné' pour quelle raison principale ?", choices:["A. Raconter une histoire d'amour","B. S'opposer à la peine de mort","C. Décrire la vie en prison","D. Glorifier la justice"], correct:1, explanation:"Victor Hugo écrit cette œuvre contre la peine de mort pour montrer l'humanité du condamné." },
+      { question: "Quel est le genre littéraire de 'Le Dernier Jour d'un Condamné' ?", choices:["A. Un poème épique","B. Une pièce de théâtre","C. Un journal intime","D. Un essai philosophique"], correct:2, explanation:"C'est un journal intime : le narrateur raconte ses pensées les derniers jours avant son exécution." },
+      { question: "Quelle est la position de Victor Hugo face à la peine de mort ?", choices:["A. Il la soutient","B. Il la critique et la condamne","C. Il est neutre","D. Il n'en parle pas"], correct:1, explanation:"Victor Hugo s'oppose fermement à la peine de mort. Cette œuvre est un acte de dénonciation." },
+      { question: "En quelle année 'Le Dernier Jour d'un Condamné' a-t-il été écrit ?", choices:["A. 1829","B. 1832","C. 1840","D. 1862"], correct:0, explanation:"Le roman a été publié en 1829. C'est l'une des critiques les plus virales de la peine de mort du XIXe siècle." },
+      { question: "Quel sentiment domine dans 'Le Dernier Jour d'un Condamné' ?", choices:["A. La haine","B. L'amour","C. La peur et l'angoisse","D. La vengeance"], correct:2, explanation:"Le sentiment dominant est l'angoisse existentielle face à la mort imminente et l'absurdité de la vie." },
+      { question: "Pourquoi le condamné est-il condamné dans 'Le Dernier Jour d'un Condamné' ?", choices:["A. Le texte l'explique clairement","B. Le texte le cache volontairement","C. Il est injustement condamné","D. C'est un crime politique"], correct:1, explanation:"Victor Hugo ne révèle pas le crime : il focalise sur l'humanité du condamné, pas sur son action." },
+      { question: "Que représente le 'jour' dans 'Le Dernier Jour d'un Condamné' ?", choices:["A. L'espoir","B. La fin inévitable","C. La lumière de la justice","D. Un nouveau commencement"], correct:1, explanation:"Le 'dernier jour' symbolise l'inévitabilité de la mort, la fin absolue qui s'approche." },
+      { question: "Comment Victor Hugo utilise-t-il le style narratif pour créer l'empathie ?", choices:["A. Par une narration externe","B. Par un monologue dramatique","C. Par un journal intime du condamné","D. Par des dialogues naturels"], correct:2, explanation:"Le journal intime nous fait entrer directement dans la conscience du condamné, créant une forte empathie." },
+      { question: "Qu'est-ce qu'une métaphore ?", choices:["A. Une comparaison avec 'comme'","B. Un rapprochement symbolique sans 'comme'","C. Une exagération","D. Une ironie"], correct:1, explanation:"Une métaphore est une comparaison implicite entre deux éléments sans outil comparatif (contrairement à la simile)." },
+      { question: "'Il est un lion au combat' est un exemple de :", choices:["A. Métaphore","B. Comparaison","C. Métonymie","D. Allégorie"], correct:0, explanation:"C'est une métaphore : on dit qu'il EST un lion (pas 'comme un lion'). La comparaison est implicite." },
+      { question: "Qu'est-ce qu'une comparaison en littérature ?", choices:["A. Un jugement de valeur","B. Un rapprochement avec 'comme' ou 'tel'","C. Une description","D. Une énumération"], correct:1, explanation:"Une comparaison unit deux éléments avec un outil comparatif : 'comme', 'tel', 'ainsi que', etc." },
+      { question: "'Elle est douce comme la soie' est :", choices:["A. Une métaphore","B. Une comparaison","C. Une hyperbole","D. Un oxymore"], correct:1, explanation:"C'est une comparaison car l'outil 'comme' relie 'douce' et 'soie'." },
+      { question: "Qu'est-ce qu'une hyperbole ?", choices:["A. Une sous-estimation","B. Une exagération excessive","C. Une comparaison","D. Une ironie"], correct:1, explanation:"Une hyperbole amplifie la réalité : 'Je meurs de faim', 'J'ai mille fois raison'." },
+      { question: "Qu'est-ce qu'une ironie ?", choices:["A. L'expression sincère d'un sentiment","B. Un énoncé dont le sens apparent contraste avec le sens réel","C. Une exagération","D. Une allégorie"], correct:1, explanation:"L'ironie dit l'inverse de ce qu'on veut faire comprendre : 'Bravo, tu as raté encore !' (critique cachée)." },
+      { question: "Qu'est-ce qu'une métonymie ?", choices:["A. Une comparaison","B. Un nom pour un autre à cause d'une relation","C. Une exagération","D. Une négation"], correct:1, explanation:"Métonymie : remplacer un mot par un autre lié : 'Lire Victor Hugo' = lire les œuvres, pas Hugo lui-même." },
+      { question: "Qu'est-ce qu'une allitération ?", choices:["A. Une répétition d'idées","B. La répétition du même son initial","C. Une énumération","D. Un contraste"], correct:1, explanation:"Allitération : 'Les éclats de l'Éternel' — répétition du son 'é'. Elle crée une musicalité." },
+      { question: "Qu'est-ce qu'une allégorie ?", choices:["A. Une figure qui raconte une fable","B. Une comparaison simple","C. Une exagération","D. Une ironie"], correct:0, explanation:"Allégorie : une narration symbolique où chaque élément représente une abstraction (ex : Fable de La Fontaine)." },
+      { question: "Qu'est-ce qu'une antithèse ?", choices:["A. Une exagération","B. Un contraste entre deux idées opposées","C. Une comparaison","D. Une métaphore"], correct:1, explanation:"Antithèse : opposition de deux idées : 'C'était le meilleur des temps, c'était le pire des temps' (Dickens)." },
+      { question: "Qu'est-ce qu'un oxymore ?", choices:["A. Une exagération","B. L'association de deux mots contradictoires","C. Une ironie","D. Une allégorie"], correct:1, explanation:"Oxymore : 'obscure clarté', 'un silence assourdissant' — contradiction fertile qui crée du sens." },
+      { question: "En production écrite, que contient le plan dialectique ?", choices:["A. Uniquement la thèse","B. Thèse et antithèse","C. Thèse, antithèse et synthèse","D. Introduction et conclusion"], correct:2, explanation:"Plan dialectique : thèse (idée), antithèse (objection), synthèse (conclusion). C'est le plan standard pour un argument." },
+      { question: "Quel est le plan analytique ?", choices:["A. Thèse, antithèse, synthèse","B. Cause, conséquence, solution","C. Idée, définition, exemple","D. Introduction, développement, conclusion"], correct:1, explanation:"Plan analytique : cause (causes du problème), effet (conséquences), solution (remèdes). Pour l'analyse de problèmes." },
+      { question: "Qu'est-ce qu'un connecteur logique ?", choices:["A. Un mot de liaison","B. Un adjectif","C. Un synonyme","D. Un verbe"], correct:0, explanation:"Connecteur logique : 'cependant', 'donc', 'en effet', 'de plus' — mots qui lient les idées logiquement." },
+      { question: "'Cependant', 'néanmoins', 'toutefois' expriment :", choices:["A. L'addition","B. L'opposition ou la concession","C. La cause","D. La conséquence"], correct:1, explanation:"Ces connecteurs marquent l'opposition ou la restriction : ils introduisent une idée qui contraste." },
+      { question: "'Par conséquent', 'donc', 'alors' expriment :", choices:["A. L'addition","B. L'opposition","C. La conséquence ou la déduction","D. La cause"], correct:2, explanation:"Ces connecteurs marquent la conclusion logique : effet d'une cause mentionnée avant." },
+      { question: "'De plus', 'en outre', 'aussi' expriment :", choices:["A. L'opposition","B. L'addition ou la progression","C. La cause","D. La restriction"], correct:1, explanation:"Ces connecteurs ajoutent une information : cumul d'arguments ou de faits." },
+      { question: "'Car', 'en effet', 'puisque' expriment :", choices:["A. La conséquence","B. L'opposition","C. La cause ou l'explication","D. L'alternative"], correct:2, explanation:"Ces connecteurs justifient ou expliquent : 'Je suis venu car je l'avais promis'." },
+      { question: "Qu'est-ce qu'un texte descriptif ?", choices:["A. Un texte qui raconte une histoire","B. Un texte qui énumère les caractéristiques d'une personne ou un objet","C. Un texte qui argumente","D. Un texte qui dialogue"], correct:1, explanation:"Texte descriptif : peinture des détails, des qualités, de l'apparence (portraits, paysages)." },
+      { question: "Qu'est-ce qu'un texte narratif ?", choices:["A. Une description","B. Un récit d'événements avec chronologie","C. Un argument","D. Un dialogue"], correct:1, explanation:"Texte narratif : succession d'actions dans le temps. Récit avec début, développement, fin." },
+      { question: "Qu'est-ce qu'un texte argumentatif ?", choices:["A. Une histoire","B. Une description","C. Un énoncé qui défend une thèse avec des preuves","D. Un dialogue"], correct:2, explanation:"Texte argumentatif : développe une idée, la soutient avec des preuves et des exemples." },
+      { question: "Qu'est-ce qu'un texte explicatif ?", choices:["A. Un récit","B. Une argument","C. Un texte qui explique un phénomène","D. Une description"], correct:2, explanation:"Texte explicatif : clarifier, informer. Exemple : 'Comment fonctionne la photosynthèse ?'" },
+      { question: "Qu'est-ce qu'un texte dialogué ?", choices:["A. Un récit","B. Un échange de paroles entre personnages","C. Une argumentation","D. Une description"], correct:1, explanation:"Texte dialogué : échange direct entre personnages avec tirets, guillemets (pièce de théâtre, roman dialogué)." },
+      { question: "Quel est le rôle du narrateur dans 'La Boîte à Merveilles' ?", choices:["A. Observer externe","B. Un enfant qui raconte son enfance","C. Un tiers omniscient","D. Un critique"], correct:1, explanation:"Narrateur homodiégétique (participant) : Sidi Mohammed raconte en je sa propre enfance à Fès." },
+      { question: "Quel est le point de vue narratif dans 'Le Dernier Jour d'un Condamné' ?", choices:["A. Narration omnisciente","B. Narration en première personne interne","C. Narration en deuxième personne","D. Narration externe"], correct:1, explanation:"Première personne (je) : le condamné raconte ses pensées. On vit de l'intérieur son dernier jour." },
+      { question: "Quel type de temps prédominant dans 'Antigone' ?", choices:["A. Passé composé","B. Imparfait","C. Présent de l'indicatif","D. Conditionnel"], correct:2, explanation:"Théâtre use surtout du présent : impression d'action qui se déroule en direct devant nous." },
+      { question: "Quel temps grammatical dans 'La Boîte à Merveilles' ?", choices:["A. Présent","B. Imparfait et passé composé","C. Passé simple","D. Passé antérieur"], correct:1, explanation:"Mélange imparfait (paysage, états) et passé composé (actions) : style narratif fluide et intime." },
+      { question: "Quel est le style de 'Le Dernier Jour d'un Condamné' ?", choices:["A. Épique","B. Intimiste et psychologique","C. Comique","D. Satirique"], correct:1, explanation:"Style intimiste : introspection du condamné, réflexion profonde sur l'existence, la mort, l'injustice." },
+      { question: "Quel symbolisme dans 'La Boîte à Merveilles' ?", choices:["A. La boîte = la valise du voyage","B. La boîte = la mémoire de l'enfance","C. La boîte = le trésor caché","D. La boîte = la ville de Fès"], correct:1, explanation:"La boîte symbolise la réserve de merveilles de l'enfance, les souvenirs précieux gardés en soi." },
+      { question: "Quel est le symbolisme de la mort dans 'Antigone' ?", choices:["A. L'absurdité de la vie","B. La rébellion de la conscience","C. Le tragique du destin","D. La vengeance divine"], correct:2, explanation:"La mort d'Antigone incarne le tragique : conflit inévitable entre l'individu et la loi." },
+      { question: "Quel est le message humaniste de 'Le Dernier Jour d'un Condamné' ?", choices:["A. La mort est justice","B. Le crime mérite la mort","C. Chaque être, même criminel, mérite la compassion","D. La prison est suffisante"], correct:2, explanation:"Hugo humanise le condamné : montrer sa souffrance, son humanité, plaider contre la peine de mort." },
+      { question: "Quel est le contexte historique de 'La Boîte à Merveilles' ?", choices:["A. Le Maroc moderne","B. La Fès coloniale du Protectorat (1920-30s)","C. Le Maroc préhistorique","D. La Fès médiévale"], correct:1, explanation:"Ahmed Sefrioui décrit son enfance à Fès sous le Protectorat français (années 1920-1930)." },
+      { question: "Quel est le contexte de 'Antigone' de Jean Anouilh ?", choices:["A. Allégorie de la Résistance française (1944)","B. Critique du régime nazi","C. Tragédie grecque pure","D. Satire politique"], correct:0, explanation:"Anouilh adapte Antigone en 1944 : allégorie de la Résistance française contre l'occupation (Créon = l'oppresseur)." },
+      { question: "Le personnage de Lalla Zoubida représente :", choices:["A. La tradition marocaine","B. L'amour maternel et la protection","C. La superstition","D. Toutes ces réponses"], correct:3, explanation:"Lalla Zoubida incarne la tradition, la douceur maternelle, la protection et les croyances populaires." },
+      { question: "Quel est l'effetdu temps limité dans 'Le Dernier Jour d'un Condamné' ?", choices:["A. Augmente la tension dramatique","B. Crée de l'ennui","C. Accélère le rythme narratif","D. A et C"], correct:3, explanation:"Le temps limité crée suspense (quand sera l'exécution ?) et accélère le rythme : urgence existentielle." },
+      { question: "Comment Anouilh modernise-t-il 'Antigone' ?", choices:["A. Style et langage contemporains","B. Critique sociale de son époque","C. Mise à jour des personnages","D. Toutes ces réponses"], correct:3, explanation:"Anouilh utilise un langage moderne, intègre sa critique du régime nazi, crée une Antigone jeune et passionnée." },
+    ],
+    'Éducation Islamique': [
+      { question: "Combien d'arkan (piliers) de l'Islam y a-t-il ?", choices:["A. Trois","B. Quatre","C. Cinq","D. Six"], correct:2, explanation:"Les cinq piliers de l'Islam : Shahada, Salat, Zakat, Sawm, Hajj. Fondements de la foi musulmane." },
+      { question: "Qu'est-ce que la Shahada ?", choices:["A. La prière","B. La profession de foi : 'Il n'y a d'autre divinité qu'Allah, Muhammad est son messager'","C. L'aumône","D. Le jeûne"], correct:1, explanation:"Shahada est le témoignage de foi fondamental de l'Islam. Réciter sincèrement la Shahada fait de vous un musulman." },
+      { question: "Combien de fois par jour un musulman doit-il prier ?", choices:["A. Deux fois","B. Trois fois","C. Quatre fois","D. Cinq fois"], correct:3, explanation:"Cinq prières quotidiennes obligatoires : Fajr (avant l'aube), Dhuhr (midi), Asr (après-midi), Maghrib (coucher), Isha (nuit)." },
+      { question: "Quel est le mois du jeûne en Islam ?", choices:["A. Muharram","B. Rajab","C. Ramadan","D. Dhul-Hijjah"], correct:2, explanation:"Ramadan est le neuvième mois lunaire : mois de jeûne, de prière et de réflexion spirituelle. Les musulmans s'abstiennent de boire et manger du levé au coucher du soleil." },
+      { question: "Qu'est-ce que la Zakat ?", choices:["A. Une taxe volontaire","B. Un impôt obligatoire sur les biens","C. Une prière supplémentaire","D. Une aumône ponctuelle"], correct:1, explanation:"Zakat est l'impôt obligatoire du musulman riche sur ses biens (généralement 2,5% annuel) pour aider les pauvres." },
+      { question: "Qu'est-ce que le Hajj ?", choices:["A. La prière du soir","B. Le jeûne","C. Le pèlerinage à La Mecque","D. L'aumône"], correct:2, explanation:"Hajj est le pèlerinage à La Mecque que chaque musulman ayant les moyens doit faire au moins une fois." },
+      { question: "Combien de fois les croyants circumambulent (font le tour) de la Kaaba ?", choices:["A. Cinq fois","B. Six fois","C. Sept fois","D. Neuf fois"], correct:2, explanation:"Le Tawaf (circumambulation) autour de la Kaaba se fait sept fois en sens anti-horaire, c'est un acte du Hajj." },
+      { question: "Quel est le chef spirituel de la Kaaba ?", choices:["A. Le Grand Imam","B. Le Calife","C. Le Muezzin","D. Le Qadi"], correct:0, explanation:"Le Grand Imam est le chef religieux qui mène les prières à la Mosquée Sacrée de La Mecque." },
+      { question: "Combien de raka'ahs (unités) dans la prière de Fajr ?", choices:["A. Deux","B. Trois","C. Quatre","D. Cinq"], correct:0, explanation:"La prière de Fajr (aube) comporte deux raka'ahs obligatoires. C'est la prière la plus courte." },
+      { question: "Combien de raka'ahs dans la prière de Dhuhr ?", choices:["A. Deux","B. Trois","C. Quatre","D. Cinq"], correct:2, explanation:"La prière de Dhuhr (midi) comporte quatre raka'ahs. Comme Asr et Isha, ce sont les plus longues." },
+      { question: "Quel Archange a révélé le Coran au Prophète Muhammad ?", choices:["A. Uriel","B. Jibril (Gabriel)","C. Mikail (Michel)","D. Israfil"], correct:1, explanation:"Jibril est l'Archange Gabriel. Allah l'a envoyé transmettre le Coran au Prophète Muhammad sur 23 ans." },
+      { question: "Combien de sourates contient le Coran ?", choices:["A. 104","B. 110","C. 114","D. 120"], correct:2, explanation:"Le Coran contient 114 sourates (chapitres), de longueurs variées, du plus long (Al-Baqarah) au plus court (Al-Kawthar)." },
+      { question: "Quel est le nom du Prophète donné à la révélation ?", choices:["A. Al-Furqan (le Discernement)","B. Al-Kitab (le Livre)","C. Al-Huda (la Guidance)","D. Toutes ces réponses"], correct:3, explanation:"Le Coran a plusieurs noms : Al-Furqan, Al-Kitab, Al-Huda — tous évoquent des aspects de sa nature." },
+      { question: "Quel est le premier verset révélé du Coran ?", choices:["A. 'Lis au nom de ton Seigneur'","B. 'Louange à Allah'","C. 'Il n'y a d'autre divinité qu'Allah'","D. 'Que la paix soit sur vous'"], correct:0, explanation:"Les premiers versets révélés (Surah Al-'Alaq 1-5) : 'Lis au nom de ton Seigneur qui a créé'." },
+      { question: "Combien d'années a duré la révélation du Coran ?", choices:["A. 15 ans","B. 20 ans","C. 23 ans","D. 30 ans"], correct:2, explanation:"La révélation du Coran au Prophète Muhammad a duré 23 ans, de l'âge de 40 à 63 ans." },
+      { question: "Quel est le plus long sourate du Coran ?", choices:["A. At-Taha","B. Al-Baqarah","C. An-Nur","D. Al-Isra'"], correct:1, explanation:"Al-Baqarah (La Génisse) est la plus longue sourate du Coran avec 286 versets." },
+      { question: "Quel est le plus court sourate du Coran ?", choices:["A. Al-Ikhlas","B. Al-Kawthar","C. Al-Fil","D. An-Nas"], correct:1, explanation:"Al-Kawthar (L'Abondance) est le plus court sourate avec seulement 3 versets." },
+      { question: "Combien de versets le Coran contient-il (ayahs) ?", choices:["A. 6,200","B. 6,236","C. 6,400","D. 6,600"], correct:1, explanation:"Le Coran contient 6,236 versets (ayahs). Chaque ayah est une unité de sens coranique." },
+      { question: "En quelle année Hijri la Hijrah (migration) du Prophète à Médine a-t-elle eu lieu ?", choices:["A. 1 AH","B. 2 AH","C. 3 AH","D. 5 AH"], correct:0, explanation:"L'Hijrah du Prophète à Médine a marqué l'année 1 AH (Anno Hegirae). C'est le début du calendrier islamique." },
+      { question: "Quel était le nom de Médine avant l'arrivée du Prophète ?", choices:["A. Taiba","B. Yathrib","C. Al-Qasr","D. Al-Hijaz"], correct:1, explanation:"Médine s'appelait Yathrib. Après l'arrivée du Prophète, on l'appela Madinat al-Nabi (Ville du Prophète)." },
+      { question: "Quel est le nom de la bataille entre les Mecquois et les Musulmans en 624 ?", choices:["A. Bataille d'Uhud","B. Bataille de Badr","C. Bataille de Khandaq","D. Bataille de Hunayn"], correct:1, explanation:"La Bataille de Badr (624 AH) : première victoire musulmane contre les Mecquois. Tournant majeur dans l'Islam." },
+      { question: "Combien de compagnons du Prophète sont morts à la Bataille d'Uhud ?", choices:["A. 50","B. 70","C. 100","D. 150"], correct:1, explanation:"À Uhud (625 AH), environ 70 musulmans sont morts. Les Mecquois ont remporté cette bataille." },
+      { question: "Quel est le siège de Khandaq (Fossé) dans l'histoire islamique ?", choices:["A. 623 AH","B. 625 AH","C. 627 AH","D. 630 AH"], correct:2, explanation:"Le Siège du Fossé (627 AH) : les Mecquois et leurs alliés ont assiégé Médine mais ont échoué." },
+      { question: "En quelle année Le Prophète a-t-il conquis La Mecque ?", choices:["A. 627 AH","B. 628 AH","C. 629 AH","D. 630 AH"], correct:3, explanation:"La Conquête de La Mecque a eu lieu en 630 AH (8 AH). Le Prophète est entré en vainqueur pacifique." },
+      { question: "Quel était le plus grand sacrifice du Prophète lors de la Conquête de La Mecque ?", choices:["A. Pardonner aux Mecquois","B. Détruire les idoles de la Kaaba","C. Établir l'Islam comme religion dominante","D. A et B"], correct:3, explanation:"Le Prophète a pardonné généreusement aux Mecquois et a ordonné de briser les 360 idoles de la Kaaba." },
+      { question: "Quel était l'Umrah (petit pèlerinage) effectué par le Prophète avant le Hajj ?", choices:["A. 6 fois","B. 8 fois","C. 10 fois","D. 12 fois"], correct:1, explanation:"Le Prophète a accompli environ 8 'Umrah durant sa vie, notamment la 'Umrah al-Qadah après Hudaybiyyah." },
+      { question: "Quel est le nom du traité signé entre le Prophète et les Mecquois ?", choices:["A. Traité de Hudaybiyyah","B. Traité de Khaybar","C. Traité de Najran","D. Traité de Tabuk"], correct:0, explanation:"Le Traité de Hudaybiyyah (628 AH) : accord de paix entre le Prophète et les Mecquois pour 10 ans." },
+      { question: "Quel était le rôle des Sahaba (compagnons) du Prophète ?", choices:["A. Mémoriser et transmettre l'Islam","B. Participer aux batailles","C. Propager le message d'Allah","D. Toutes ces réponses"], correct:3, explanation:"Les Sahaba : compagnons du Prophète. Rôle majeur : mémoriser le Coran, transmettre la Sunnah et propager l'Islam." },
+      { question: "Quel était le titre du calife Le plus proche du Prophète ?", choices:["A. Abu Bakr (Premier Calife)","B. 'Umar ibn Al-Khattab","C. 'Uthman ibn 'Affan","D. 'Ali ibn Abi Talib"], correct:0, explanation:"Abu Bakr As-Siddiq était le premier calife (632-634 AH), choisi pour sa proximité au Prophète et sa sagesse." },
+      { question: "Quel est le concept de At-Taqwa dans l'Islam ?", choices:["A. La peur","B. La piété et la conscience d'Allah","C. L'obéissance aveugle","D. L'ascétisme"], correct:1, explanation:"At-Taqwa : sentiment de vénération et de consciencede la présence d'Allah. État spirituel de respect envers Allah." },
+      { question: "Quel est le concept de Al-Adl (Justice) en Islam ?", choices:["A. Égalité stricte","B. Équité : donner chacun selon son droit","C. Loi stricte","D. Pardon absolu"], correct:1, explanation:"Al-Adl : justice équitable. Pas d'égalité mécanique mais donner à chacun ce qui lui revient justement." },
+      { question: "Quel est le concept d'Al-Ihsan ?", choices:["A. La excellence dans l'action","B. L'intention sincère","C. L'adoration comme si tu voyais Allah","D. Toutes ces réponses"], correct:3, explanation:"Al-Ihsan : perfection spirituelle. Adorer Allah comme si tu le voyais, sinon lui te voit. Excellence en toute action." },
+      { question: "Quel est l'enseignement majeur sur la tolérance en Islam ?", choices:["A. Pas de contrainte en religion","B. Respecter les Ahl al-Kitab (Gens du Livre)","C. Pardon envers les ennemis","D. Toutes ces réponses"], correct:3, explanation:"L'Islam enseigne : 'Pas de contrainte en religion', respect des Gens du Livre, pardon envers les adversaires." },
+      { question: "Quel est le droit des parents dans l'Islam ?", choices:["A. Obéissance absolue","B. Bienveillance et respect, surtout à la vieillesse","C. Servitude","D. Obéissance aveugle"], correct:1, explanation:"Droit des parents : traiter avec bienveillance, respecter surtout au grand âge ('Ohsan', excellence)." },
+      { question: "Quel est le droit de la mère en Islam ?", choices:["A. Égal au père","B. Trois fois celui du père","C. Double de celui du père","D. Inférieur au père"], correct:1, explanation:"Le Prophète a dit : 'Le Paradis se trouve sous les pieds des mères'. Droit tres majeur en Islam." },
+      { question: "Quel est l'enseignement sur l'environnement en Islam ?", choices:["A. La nature est à exploiter","B. L'environnement est dépôt d'Allah à préserver","C. Les plantes n'ont pas de valeur","D. Négliger la terre"], correct:1, explanation:"L'Islam enseigne que la terre est dépôt (Amanah) d'Allah. Devoir de préserver l'environnement." },
+      { question: "Quel est l'enseignement sur l'éducation en Islam ?", choices:["A. Éducation obligatoire pour garçons seulement","B. Éducation recommandée pour tous","C. L'ignorance est préférable","D. L'éducation est haram"], correct:1, explanation:"Islam valorise l'éducation pour tous. Premier verset révélé: 'Lis!' (lire, apprendre). Science = phare de la vie." },
+      { question: "Qu'est-ce que le Fiqh en Islam ?", choices:["A. Le Coran","B. La jurisprudence islamique","C. La prophétie","D. Le droit français"], correct:1, explanation:"Fiqh : compréhension et science du droit islamique basé sur Coran, Sunnah, Ijma', Qiyas." },
+      { question: "Qu'est-ce que la Sunnah en Islam ?", choices:["A. La loi du gouvernement","B. La pratique et les paroles du Prophète Muhammad","C. La coutume sans fondement","D. Une innovation religieuse"], correct:1, explanation:"Sunnah : la voie du Prophète. Ses actes, paroles, approbations (Taqrir). Source essentielle après le Coran." },
+      { question: "Qu'est-ce que l'Ijma' en Islam ?", choices:["A. Une prière supplémentaire","B. Le consensus des savants sur une question","C. L'invention religieuse","D. Une taxe"], correct:1, explanation:"Ijma' : accord unanime des savants musulmans sur une question religieuse. Source importante de droit." },
+      { question: "Qu'est-ce que la Qiyas en Islam ?", choices:["A. La mesure mécanique","B. L'analogie juridique par extension","C. L'innovation","D. La superstition"], correct:1, explanation:"Qiyas : raisonnement par analogie. Appliquer une règle coranique/prophétique à un cas similaire nouveau." },
+      { question: "Quel est le nombre des quatre écoles juridiques (Madhabs) en Islam ?", choices:["A. Deux","B. Trois","C. Quatre","D. Cinq"], correct:2, explanation:"Quatre Madhabs (écoles) : Hanafi, Maliki, Shafi'i, Hanbali. Toutes reconnaissables et légitime en Islam." },
+      { question: "Quel est le Madhab dominant au Maroc ?", choices:["A. Hanafi","B. Maliki","C. Shafi'i","D. Hanbali"], correct:1, explanation:"L'école Maliki domine au Maroc et en Afrique de l'Ouest. Fondée par Malik ibn Anas." },
+      { question: "Quel est le concept du Tawhid ?", choices:["A. La trinité","B. L'unicité d'Allah","C. Le polythéisme","D. Le matérialisme"], correct:1, explanation:"Tawhid : témoignage qu'il n'y a qu'un Allah. Concept central, cœur de la foi islamique." },
+      { question: "Quel est le concept d'Al-Shirk ?", choices:["A. L'unicité","B. L'association d'autres divinités à Allah","C. La foi","D. La soumission"], correct:1, explanation:"As-Shirk : associer d'autres à Allah, idolâtrie. Péché majeur en Islam, le plus grave." },
+      { question: "Quel est le jour du Jugement Dernier en Islam ?", choices:["A. Yawm al-Jumu'ah (vendredi)","B. Yawm ad-Din (jour du jugement)","C. Yawm al-Qiyamah (résurrection)","D. B et C"], correct:3, explanation:"Yawm ad-Din (jour du jugement) et Yawm al-Qiyamah (jour de la résurrection). Croyance centrale en Islam." },
+      { question: "Qu'est-ce que As-Sirat (le Pont) en Islam ?", choices:["A. Une montagne","B. Un pont sur lequel les âmes passeront le jour du jugement","C. Une loi","D. Un traité"], correct:1, explanation:"As-Sirat : pont fin comme un cheveu sur lequel les âmes passeront le jour de la résurrection." },
+    ],
+    'Histoire-Géographie': [
+      { question: "En quelle année la Première Guerre Mondiale a-t-elle commencé ?", choices:["A. 1912","B. 1914","C. 1916","D. 1918"], correct:1, explanation:"La Première Guerre Mondiale (1914-1918) a commencé avec l'assassinat de l'Archiduc François-Ferdinand." },
+      { question: "Quel était le principal objectif de la Première Guerre Mondiale ?", choices:["A. La liberté","B. L'indépendance coloniale","C. Redessiner les frontières européennes","D. Le contrôle du Moyen-Orient"], correct:2, explanation:"La Grande Guerre redessina les cartes : effondrement des empires austro-hongrois, ottoman et russe." },
+      { question: "Combien de millions de morts la Première Guerre Mondiale a-t-elle causés ?", choices:["A. 5 millions","B. 10 millions","C. 20 millions","D. 40 millions"], correct:1, explanation:"La Première Guerre a tué environ 10 millions de personnes (civils et militaires). Catastrophe humaine inédite." },
+      { question: "Quel traité a terminé la Première Guerre Mondiale ?", choices:["A. Traité de Versailles","B. Traité de Brest-Litovsk","C. Traité de Trianon","D. Traité de Saint-Germain"], correct:0, explanation:"Le Traité de Versailles (1919) a mis fin à la Première Guerre Mondiale. Il a imposé des conditions sévères à l'Allemagne." },
+      { question: "En quelle année la Seconde Guerre Mondiale a-t-elle commencé ?", choices:["A. 1937","B. 1938","C. 1939","D. 1941"], correct:2, explanation:"La Seconde Guerre Mondiale (1939-1945) a commencé avec l'invasion de la Pologne par l'Allemagne nazie." },
+      { question: "Qui était le leader de l'Allemagne nazie ?", choices:["A. Bismarck","B. Adolf Hitler","C. Hermann Göring","D. Joseph Goebbels"], correct:1, explanation:"Adolf Hitler (1889-1945) a mené l'Allemagne nazie et déclenché la Seconde Guerre Mondiale." },
+      { question: "Quel était l'objectif principal d'Hitler ?", choices:["A. L'égalité sociale","B. La suprématie raciale et l'expansion territoriale","C. La paix mondiale","D. La démocratie"], correct:1, explanation:"Nazisme : idéologie de suprématie raciale (Herrenvolk), expansion du Lebensraum (espace vital) allemand." },
+      { question: "Combien de millions de personnes sont mortes dans la Shoah ?", choices:["A. 3 millions","B. 6 millions","C. 10 millions","D. 15 millions"], correct:1, explanation:"La Shoah a tué environ 6 millions de Juifs, plus les victimes d'autres groupes (Roms, homosexuels, handicapés, etc.)." },
+      { question: "En quelle année l'Allemagne a-t-elle envahi la France ?", choices:["A. 1939","B. 1940","C. 1941","D. 1942"], correct:1, explanation:"L'Allemagne a envahi la France en mai 1940. La France a capitulé en juin 1940." },
+      { question: "Quel était le régime de Vichy en France ?", choices:["A. Un gouvernement démocratique","B. Un régime collaborationniste","C. Un régime communiste","D. Une zone libre"], correct:1, explanation:"Régime de Vichy (1940-1944) : gouvernement autoritaire collaborationniste dirigé par le Maréchal Pétain." },
+      { question: "Qui a mené la Résistance française ?", choices:["A. Pétain","B. Charles de Gaulle","C. Reynaud","D. Laval"], correct:1, explanation:"Général Charles de Gaulle (1890-1970) a lancé l'appel du 18 juin et mené la Résistance française à l'exil." },
+      { question: "En quelle année les Alliés ont-ils libéré la France ?", choices:["A. 1943","B. 1944","C. 1945","D. 1946"], correct:1, explanation:"Le Débarquement du 6 juin 1944 en Normandie a marqué le début de la libération de la France." },
+      { question: "En quelle année la Seconde Guerre Mondiale a-t-elle terminé en Europe ?", choices:["A. 1944","B. 1945 (mai)","C. 1945 (septembre)","D. 1946"], correct:1, explanation:"L'Allemagne a capitulé le 8 mai 1945 (VE Day). La guerre en Europe a terminé." },
+      { question: "En quelle année la Seconde Guerre Mondiale a-t-elle terminé en Asie ?", choices:["A. 1944","B. 1945 (mai)","C. 1945 (août-septembre)","D. 1946"], correct:2, explanation:"Le Japon a capitulé le 15 août 1945 (VJ Day), officieusement le 2 septembre 1945 après les bombes atomiques." },
+      { question: "Quel fut le bilan humain total de la Seconde Guerre Mondiale ?", choices:["A. 20 millions","B. 40 millions","C. 70 millions","D. 100 millions"], correct:2, explanation:"La Seconde Guerre a tué environ 70-85 millions de personnes (civils et militaires). Pire conflit de l'humanité." },
+      { question: "Quelle organisation a été créée après la Seconde Guerre Mondiale ?", choices:["A. La SDN","B. L'ONU","C. L'OTAN","D. L'Union Européenne"], correct:1, explanation:"L'ONU (Organisation des Nations Unies) a été créée en 1945 pour maintenir la paix mondiale." },
+      { question: "En quelle année l'ONU a-t-elle été fondée ?", choices:["A. 1943","B. 1944","C. 1945","D. 1946"], correct:2, explanation:"L'ONU a été fondée le 24 octobre 1945 après la Conférence de San Francisco." },
+      { question: "Quel was le principal objectif de la décolonisation ?", choices:["A. Maintenir le contrôle européen","B. Libérer les colonies de la domination impérialiste","C. Créer des zones franches","D. Étendre l'influence coloniale"], correct:1, explanation:"Décolonisation : processus par lequel les peuples coloniaux ont obtenu leur indépendance (1945-1970)." },
+      { question: "En quelle année l'Inde a-t-elle obtenu son indépendance ?", choices:["A. 1945","B. 1947","C. 1950","D. 1952"], correct:1, explanation:"L'Inde a obtenu l'indépendance le 15 août 1947. Partitionnement en Inde et Pakistan." },
+      { question: "Quel leader a mené l'indépendance de l'Inde ?", choices:["A. Rabindranath Tagore","B. Subhas Chandra Bose","C. Mahatma Gandhi","D. Jawaharlal Nehru"], correct:2, explanation:"Mahatma Gandhi (1869-1948) a mené la décolonisation indienne par la non-violence (Ahimsa)." },
+      { question: "En quelle année le Maroc a-t-il obtenu son indépendance ?", choices:["A. 1952","B. 1953","C. 1956","D. 1960"], correct:2, explanation:"Le Maroc a obtenu l'indépendance de la France le 2 mars 1956 sous le roi Muhammad V." },
+      { question: "Qui était le leader marocain pour l'indépendance ?", choices:["A. Muhammad V","B. Hassan II","C. Abu Bakr Bengalis","D. Allal Al-Fassi"], correct:0, explanation:"Le roi Muhammad V (1909-1961) a mené la lutte pour l'indépendance du Maroc." },
+      { question: "Quel empire colonial a cédé le Maroc en 1956 ?", choices:["A. La Grande-Bretagne","B. La France et l'Espagne","C. L'Italie","D. La Belgique"], correct:1, explanation:"Maroc était colonisé par la France (protectorat français) et l'Espagne (Maroc espagnol). Les deux ont cédé en 1956." },
+      { question: "Quelle était la principale forme de colonialisme en Afrique ?", choices:["A. Protectorat","B. Domination directe","C. Mandat international","D. Toutes ces formes"], correct:3, explanation:"Colonialisme africain : protectorats, colonies de peuplement, mandats de la Société des Nations — diverses formes." },
+      { question: "En quelle année l'Algérie a-t-elle obtenu son indépendance ?", choices:["A. 1954","B. 1960","C. 1962","D. 1970"], correct:2, explanation:"L'Algérie a obtenu l'indépendance de la France le 5 juillet 1962 après une guerre (1954-1962)." },
+      { question: "Combien d'années a duré la Guerre d'Algérie ?", choices:["A. 6 ans","B. 8 ans","C. 10 ans","D. 12 ans"], correct:1, explanation:"La Guerre d'Algérie (1954-1962) : 8 ans de conflit sanglant. Environ 1 million de morts." },
+      { question: "Quel est le concept central de la Guerre Froide ?", choices:["A. Conflit armé direct","B. Affrontement idéologique (capitalisme vs communisme)","C. Paix mondiale","D. Unité des grandes puissances"], correct:1, explanation:"Guerre Froide : compétition USA/URSS sans conflit militaire direct. Affrontement idéologique, politique, économique." },
+      { question: "En quelle années la Guerre Froide a-t-elle duré ?", choices:["A. 1917-1960","B. 1945-1991","C. 1950-1980","D. 1960-2000"], correct:1, explanation:"Guerre Froide (1945-1991) : période de tensions entre USA et URSS après WWII jusqu'à effondrement soviétique." },
+      { question: "Quel événement a marqué le début de la Guerre Froide ?", choices:["A. La bombe atomique sur Hiroshima","B. La division de l'Allemagne et de la Corée","C. Le Blocus de Berlin (1948-1949)","D. La création de l'ONU"], correct:2, explanation:"Le Blocus de Berlin (1948-1949) : URSS bloque accès à Berlin. Symbole majeur de la Guerre Froide." },
+      { question: "Quelle organisation a été créée par l'URSS et ses alliés ?", choices:["A. L'OTAN","B. Le Pacte de Varsovie","C. Le GATT","D. Le FMI"], correct:1, explanation:"Pacte de Varsovie (1955) : alliance militaire soviétique face à l'OTAN. Créé pour contrer le réarmement allemand." },
+      { question: "Quel événement a marqué la fin de la Guerre Froide ?", choices:["A. La Chute du Mur de Berlin (1989)","B. L'effondrement de l'URSS (1991)","C. La réunification de l'Allemagne (1990)","D. Toutes ces réponses"], correct:3, explanation:"Chute du Mur (1989), réunification allemande (1990), effondrement URSS (1991) marquent fin de la Guerre Froide." },
+      { question: "Quel est le relief majeur du Maroc ?", choices:["A. Les plaines côtières","B. La Chaîne de l'Atlas","C. Les zones désertiques","D. Toutes ces réponses"], correct:3, explanation:"Relief marocain : Chaîne de l'Atlas (Haut Atlas, Moyen Atlas, Anti-Atlas), plaines atlantiques et méditerranéennes, Sahara." },
+      { question: "Quel est le plus haut sommet du Maroc ?", choices:["A. Jebel Tazarkan","B. Jebel Toubkal","C. Jebel Siroua","D. Jebel Rhat"], correct:1, explanation:"Jebel Toubkal (4,167 m) est le plus haut sommet du Maroc et du Maghreb. Situé dans le Haut Atlas." },
+      { question: "Quel fleuve principal arrose le Maroc ?", choices:["A. Le Draa","B. Le Rif","C. Le Sebou","D. Toutes ces réponses"], correct:2, explanation:"Sebou est le plus long fleuve marocain. Autres fleuves : Draa, Sus, Oum Er-Rbia, Ziz." },
+      { question: "Quel est le climat principal du Maroc ?", choices:["A. Tropical","B. Méditerranéen et désertique","C. Tempéré","D. Équatorial"], correct:1, explanation:"Climat marocain : méditerranéen au nord, continental en montagne, désertique au sud (climat varié)." },
+      { question: "Quel est la plus grande ville du Maroc ?", choices:["A. Fès","B. Marrakech","C. Casablanca","D. Rabat"], correct:2, explanation:"Casablanca est la plus grande ville du Maroc avec environ 3 millions d'habitants. Capitale économique." },
+      { question: "Quelle est la capitale du Maroc ?", choices:["A. Casablanca","B. Fès","C. Rabat","D. Marrakech"], correct:2, explanation:"Rabat est la capitale administrative du Maroc depuis 1956. Siège de la couronne et du gouvernement." },
+      { question: "Quel est le port principal du Maroc ?", choices:["A. Tanger","B. Casablanca","C. Safi","D. Essaouira"], correct:1, explanation:"Casablanca est le plus grand port du Maroc. Important hub maritime et économique d'Afrique." },
+      { question: "Quel est la population approximative du Maroc ?", choices:["A. 30 millions","B. 35 millions","C. 40 millions","D. 50 millions"], correct:0, explanation:"Population du Maroc : environ 36-37 millions d'habitants (2024). Pays le plus peuplé du Maghreb après l'Algérie." },
+      { question: "Quel est le taux d'urbanisation au Maroc ?", choices:["A. 30%","B. 50%","C. 65%","D. 80%"], correct:2, explanation:"Taux d'urbanisation marocain : environ 60-65%. Augmentation rapide de l'urbanisation ces dernières décennies." },
+      { question: "Quel est la principale ressource naturelle du Maroc ?", choices:["A. Le pétrole","B. Le phosphate","C. L'or","D. Le gaz naturel"], correct:1, explanation:"Phosphate : Maroc est le 3e producteur mondial. Ressource majeure pour l'économie marocaine." },
+      { question: "Quel secteur économique domine l'économie marocaine ?", choices:["A. L'agriculture seule","B. Le secteur tertiaire (services, tourisme)","C. L'industrie lourde","D. L'extraction minière"], correct:1, explanation:"Économie marocaine : secteur tertiaire (tourisme, services), agriculture, phosphate, remittances." },
+      { question: "Quel est l'importance du tourisme au Maroc ?", choices:["A. Négligeable","B. Important source de devises et emplois","C. Très limité","D. Déclinant"], correct:1, explanation:"Tourisme : secteur vital pour le Maroc. Millions de visiteurs annuels, devises importantes." },
+      { question: "Quels sont les principales attractions touristiques du Maroc ?", choices:["A. Merrakech et Fès","B. Sahara et Atlas","C. Côte méditerranéenne","D. Toutes ces réponses"], correct:3, explanation:"Attractions marocaines : médinas historiques (Fès, Marrakech), Atlas, Sahara, côtes méditerranéenne et atlantique." },
+      { question: "Quel est le port stratégique majordu Maroc face à l'Espagne ?", choices:["A. Tanger","B. Ceuta","C. Melilla","D. Al Hoceïma"], correct:0, explanation:"Tanger : port stratégique face à l'Espagne (détroit de Gibraltar). Porte vers l'Europe." },
+      { question: "Quel est le statut de Ceuta et Melilla ?", choices:["A. Villes marocaines","B. Villes espagnoles sur le sol marocain","C. Villes autonomes","D. Villes internationales"], correct:1, explanation:"Ceuta et Melilla : enclaves espagnoles sur le sol marocain. Statut contentieux depuis des siècles." },
+      { question: "Quel est l'enjeu géopolitique majeur du Maroc ?", choices:["A. Position stratégique face à l'Afrique","B. Accès au Détroit de Gibraltar","C. Contrôle du commerce atlantique","D. Toutes ces réponses"], correct:3, explanation:"Géopolitique marocaine : carrefour Afrique-Europe, contrôle du Détroit, commerce atlantique, stabilité régionale." },
+    ],
+    'Arabe': [
+      { question: "ما هي أنواع الجملة الأساسية في اللغة العربية ؟", choices:["A. اسمية وفعلية","B. فقط اسمية","C. فقط فعلية","D. موصولة وشرطية"], correct:0, explanation:"نوعا الجملة الأساسيان : الجملة الاسمية (تبدأ باسم) والجملة الفعلية (تبدأ بفعل)." },
+      { question: "ما المقصود بالجملة الاسمية ؟", choices:["A. جملة تبدأ بفعل","B. جملة تبدأ باسم","C. جملة تبدأ بحرف","D. جملة بدون فعل"], correct:1, explanation:"الجملة الاسمية تتكون من مبتدأ وخبر. مثال: 'محمد طالب'." },
+      { question: "ما أركان الجملة الاسمية ؟", choices:["A. الفعل والفاعل","B. المبتدأ والخبر","C. الفعل والمفعول","D. الحرف والاسم"], correct:1, explanation:"الجملة الاسمية تتكون من مبتدأ (اسم) وخبر (اسم أو شبه جملة)." },
+      { question: "ما المقصود بالجملة الفعلية ؟", choices:["A. جملة تبدأ باسم","B. جملة تبدأ بفعل","C. جملة بدون فعل","D. جملة توضيحية"], correct:1, explanation:"الجملة الفعلية تتكون من فعل وفاعل. مثال: 'كتب الطالب الدرس'." },
+      { question: "ما أركان الجملة الفعلية ؟", choices:["A. المبتدأ والخبر","B. الفعل والفاعل والمفعول","C. فقط الفعل والفاعل","D. الحرف والاسم"], correct:2, explanation:"الجملة الفعلية أساساً من فعل وفاعل. والمفعول به يأتي إذا كان الفعل متعدياً." },
+      { question: "ما الفعل الماضي ؟", choices:["A. فعل يدل على حدث مستقبلي","B. فعل يدل على حدث انقضى زمنه","C. فعل يدل على الحال","D. فعل بدون زمن"], correct:1, explanation:"الفعل الماضي ينقضي زمنه. مثال: 'ذهب، قرأ، كتب'." },
+      { question: "ما الفعل المضارع ؟", choices:["A. فعل يدل على الماضي","B. فعل يدل على الحال والاستقبال","C. فعل يدل على المستقبل فقط","D. فعل بدون حركة"], correct:1, explanation:"الفعل المضارع يدل على الحال أو الاستقبال. يبدأ بحرف من: ن، ي، ت، أ." },
+      { question: "ما الفعل الأمر ؟", choices:["A. فعل يدل على طلب الفعل","B. فعل بدون زمن محدد","C. فعل يدل على الماضي","D. فعل توضيحي"], correct:0, explanation:"فعل الأمر يدل على طلب الفعل. مثال: 'اذهب، اقرأ، اكتب'." },
+      { question: "ما الفرق بين المفعول به والمفعول فيه ؟", choices:["A. لا يوجد فرق","B. المفعول به اسم والمفعول فيه ظرف","C. المفعول به يأتي بعد الفعل والمفعول فيه قبله","D. المفعول به يدل على الزمان"], correct:1, explanation:"المفعول به : تأثره بالفعل (ضربت الكرة). المفعول فيه (ظرف) : يدل على الزمان أو المكان (جلست تحت الشجرة)." },
+      { question: "ما الصفة المشبهة ؟", choices:["A. صفة مشتقة من الفعل","B. صفة دائمة لا تتغير","C. اسم فاعل","D. اسم مفعول"], correct:1, explanation:"الصفة المشبهة : صفة دائمة. مثال: 'رجل كريم' (الكرم صفة دائمة له)." },
+      { question: "ما الفرق بين اسم الفاعل واسم المفعول ؟", choices:["A. لا يوجد فرق","B. اسم الفاعل للذي يقوم بالفعل، اسم المفعول للمتأثر","C. هما متطابقان","D. لا يستخدم اسم المفعول"], correct:1, explanation:"اسم الفاعل : من يقوم بالفعل (كاتب = من يكتب). اسم المفعول : من يتأثر (مكتوب = ما يُكتَب)." },
+      { question: "ما البلاغة في اللغة العربية ؟", choices:["A. الطريقة الجميلة في التعبير","B. دراسة الفصاحة والأساليب","C. فن تجميل الكلام","D. جميع الخيارات صحيحة"], correct:3, explanation:"البلاغة : فن التعبير الجميل. تتضمن المعاني والبيان والبديع." },
+      { question: "ما الاستعارة ؟", choices:["A. تشبيه يحذف المشبه به","B. استخدام كلمة غريبة","C. تجميل الكلام بدون معنى","D. فقط استخدام الرموز"], correct:0, explanation:"الاستعارة : تشبيه حُذف أحد طرفيه. 'رأيت بحراً من الناس' (البحر = الجمع الكثير)." },
+      { question: "ما الكناية ؟", choices:["A. استعارة غير واضحة","B. التعبير عن المعنى بطريقة غير مباشرة","C. استخدام أسماء غريبة","D. إعادة صياغة الجملة"], correct:1, explanation:"الكناية : التعريض عن الشيء بما يومئ إليه بلا تصريح. 'فلان طويل الباع' (تكنية عن الكرم)." },
+      { question: "ما التشبيه ؟", choices:["A. تجميل الكلام","B. ربط شيئين بحرف 'ك' أو 'كأن'","C. استخدام كلمات جديدة","D. إعادة الترتيب"], correct:1, explanation:"التشبيه : ربط بين شيئين بوجه اشتراك باستخدام أداة ('كـ' أو 'كأن'). 'الطالب كالنحلة' في الاجتهاد." },
+      { question: "ما المجاز ؟", choices:["A. استخدام الكلمة في معناها الأصلي","B. استخدام الكلمة في معنى غير حقيقي","C. فقط استخدام الرموز","D. تجميل الكلام بدون معنى"], correct:1, explanation:"المجاز : استخدام الكلمة في معنى غير حقيقي. 'فلان أسد' (المقصود شجاع، لا حيوان حقاً)." },
+      { question: "ما أنواع المجاز ؟", choices:["A. مجاز لغوي فقط","B. مجاز عقلي فقط","C. مجاز لغوي وعقلي","D. مجاز شعري"], correct:2, explanation:"نوعا المجاز : اللغوي (استخدام لغوي) والعقلي (إسناد الفعل لغير فاعله الحقيقي)." },
+      { question: "ما الطباق ؟", choices:["A. تكرار الكلمة","B. الجمع بين متضادين","C. استخدام كلمات متشابهة","D. إعادة الترتيب"], correct:1, explanation:"الطباق : الجمع بين متضادين في الجملة. 'الليل والنهار'، 'العلم والجهل'." },
+      { question: "ما الجناس ؟", choices:["A. تشابه الألفاظ مع اختلاف المعاني","B. تكرار الكلمة نفسها","C. استخدام كلمات متضادة","D. فقط تشابه الأصوات"], correct:0, explanation:"الجناس : تشابه لفظي مع اختلاف المعاني. 'يقولون سِلْماً قُلْت سَلاماً'." },
+      { question: "ما السجع ؟", choices:["A. تكرار الكلمات","B. تطابق أواخر الفقرات في الحروف الأخيرة","C. استخدام جرس الكلمات","D. استخدام الألفاظ الغريبة"], correct:1, explanation:"السجع : تطابق أواخر الفقرات أو الجمل. 'السلام عليكم ورحمة الله وبركاته'." },
+      { question: "ما القافية ؟", choices:["A. آخر كلمة في البيت الشعري","B. تكرار الحروف","C. نهاية الجملة","D. بداية الشطر"], correct:0, explanation:"القافية : آخر كلمة في البيت الشعري أو أكثر كلمات آخر كل بيت." },
+      { question: "ما البحور الشعرية الأساسية ؟", choices:["A. بحر واحد فقط","B. بحران","C. عدة بحور مثل الطويل والكامل والبسيط","D. لا توجد بحور"], correct:2, explanation:"البحور الشعرية : عديدة منها الطويل والكامل والبسيط والوافر والرجز والخفيف وغيرها." },
+      { question: "ما الوزن الشعري ؟", choices:["A. عدد الكلمات","B. إيقاع الحروف المتحركة والساكنة","C. طول البيت","D. عدد الأبيات"], correct:1, explanation:"الوزن الشعري : إيقاع منتظم من الحروف المتحركة والساكنة حسب البحر." },
+      { question: "ما الإيقاع في الشعر ؟", choices:["A. عدد الأبيات","B. النغمة والموسيقى في الشعر","C. عدد كلمات البيت","D. ترتيب الحروف"], correct:1, explanation:"الإيقاع : الموسيقى الداخلية والخارجية للشعر. يتحقق بالوزن والقافية والسجع." },
+      { question: "ما الصورة البيانية ؟", choices:["A. رسم فني","B. تصوير معنى بألفاظ تخاطب الحس","C. صورة فوتوغرافية","D. إعادة ترتيب"], correct:1, explanation:"الصورة البيانية : تصوير المعاني بألفاظ تثير في النفس صوراً وحساً. مثل التشبيه والاستعارة." },
+      { question: "ما الرمز ؟", choices:["A. إشارة واضحة","B. علامة غير مباشرة تدل على معنى","C. كلمة غريبة","D. استخدام الألفاظ"], correct:1, explanation:"الرمز : علامة أو إشارة غير مباشرة تومئ إلى معنى مقصود. 'الليل = الحزن'." },
+      { question: "ما الأسطورة ؟", choices:["A. قصة حقيقية","B. حكاية تقليدية تتضمن عناصر خيالية","C. رواية حديثة","D. نص تاريخي"], correct:1, explanation:"الأسطورة : حكاية تراثية فيها عناصر خيالية وسحرية، تعكس معتقدات الشعب." },
+      { question: "ما الملحمة ؟", choices:["A. قصيدة قصيرة","B. عمل أدبي طويل عن أبطال وأحداث كبرى","C. نص نثري","D. أغنية شعبية"], correct:1, explanation:"الملحمة : قصيدة طويلة عن مواضيع بطولية وأحداث تاريخية (مثل الإلياذة والأوديسة)." },
+      { question: "ما الفن القصصي ؟", choices:["A. الشعر فقط","B. فن سرد القصص والأحداث","C. الخطابة","D. المراسلات"], correct:1, explanation:"الفن القصصي : فن سرد القصص والأحداث بطريقة جذابة (القصة القصيرة والرواية)." },
+      { question: "ما الفرق بين الحكاية والقصة ؟", choices:["A. لا يوجد فرق","B. الحكاية أقصر وأبسط","C. القصة أكثر تعقيداً","D. الحكاية والقصة متطابقة"], correct:1, explanation:"الحكاية أقصر وأبسط وأقل تفصيلاً من القصة. القصة أطول وأكثر تطوراً ونضجاً." },
+      { question: "ما المسرحية ؟", choices:["A. نص مكتوب","B. عمل درامي يُمثل على المسرح","C. شعر قصير","D. رسالة"], correct:1, explanation:"المسرحية : عمل أدبي درامي يُعرض على المسرح بحوار بين الشخصيات." },
+      { question: "ما أنواع المسرحية ؟", choices:["A. الدراما فقط","B. الكوميديا والتراجيديا","C. الأوبرا فقط","D. لا تقسيمات"], correct:1, explanation:"أنواع المسرحية : الكوميديا (الفنون الفكاهية)، التراجيديا (المآسي)، والدراما." },
+      { question: "ما الخطابة ؟", choices:["A. الكتابة","B. فن إلقاء الكلام بأسلوب مؤثر","C. الشعر","D. الرسائل"], correct:1, explanation:"الخطابة : فن إلقاء الكلام بأسلوب مؤثر على الجمهور. تقنية قديمة مهمة." },
+      { question: "ما أنواع الخطابة ؟", choices:["A. الخطابة السياسية فقط","B. الخطابة الدينية والسياسية والعلمية","C. خطابة واحدة","D. لا أنواع"], correct:1, explanation:"أنواع الخطابة : السياسية والدينية والعلمية والاجتماعية والعسكرية." },
+      { question: "ما الرسالة الأدبية ؟", choices:["A. بريد عادي","B. نص مكتوب يعكس مشاعر وأفكار الكاتب","C. وثيقة رسمية","D. قائمة"], correct:1, explanation:"الرسالة الأدبية : نص مكتوب يعبر عن مشاعر وأفكار الكاتب. فن أدبي قديم." },
+      { question: "ما النثر ؟", choices:["A. الشعر","B. الكلام الخالي من الوزن والقافية","C. القصائد","D. الأبيات"], correct:1, explanation:"النثر : كلام خالي من الوزن والقافية. ينقسم إلى أدبي وعلمي." },
+      { question: "ما الفرق بين النثر الأدبي والنثر العلمي ؟", choices:["A. لا يوجد فرق","B. الأدبي فيه جمال وعاطفة، العلمي موضوعي","C. متطابقان","D. النثر الأدبي أطول"], correct:1, explanation:"النثر الأدبي : فيه جمال وعاطفة وتأثير. النثر العلمي : موضوعي وخالي من العاطفة." },
+      { question: "ما التعبير الكتابي ؟", choices:["A. الكتابة العادية","B. فن التعبير الكتابي عن الأفكار والمشاعر","C. الرسائل","D. الملاحظات"], correct:1, explanation:"التعبير الكتابي : فن التعبير عن الأفكار والمشاعر والخبرات بأسلوب جميل وفعال." },
+      { question: "ما أنواع التعبير الكتابي ؟", choices:["A. نوع واحد","B. السردي والوصفي والحجاجي","C. فقط المراسلات","D. لا أنواع"], correct:1, explanation:"أنواع التعبير : السردي (قصص)، الوصفي (وصف)، الحجاجي (إقناع)، الإخباري (أخبار)." },
+      { question: "ما الأسلوب في اللغة ؟", choices:["A. طريقة الكتابة","B. طريقة خاصة في التعبير عن الأفكار","C. نمط اللغة والأسلوب الفردي","D. جميع الخيارات صحيحة"], correct:3, explanation:"الأسلوب : الطريقة الخاصة والفريدة للكاتب في التعبير. ينعكس فيه شخصيته وثقافته." },
+      { question: "ما الفصاحة ؟", choices:["A. استخدام الكلمات الصعبة","B. خلو الكلام من الأخطاء اللغوية والسلاسة","C. الكلام الطويل","D. استخدام الكلمات الغريبة"], correct:1, explanation:"الفصاحة : خلو الكلام من الخطأ اللغوي والنحوي مع السلاسة والوضوح." },
+      { question: "ما الفرق بين الفصاحة والبلاغة ؟", choices:["A. متطابقتان","B. الفصاحة سلامة اللغة، البلاغة إضافة الجمال","C. لا فرق جوهري","D. البلاغة أقل أهمية"], correct:1, explanation:"الفصاحة : صحة اللغة. البلاغة : صحة اللغة + الجمال والتأثير." },
+    ],
+  };
+  const bank = banks[subject] || banks['Français'];
+  return bank.slice(0, Math.min(n, bank.length));
+}
+
+function startQuizPlay() {
+  document.getElementById('quiz-loading').style.display = 'none';
+  document.getElementById('quiz-play').style.display = 'block';
+  document.getElementById('quiz-meta-subj').textContent = `${SUBJECTS.find(s=>s.name===quizState.subject)?.icon||'📚'} ${quizState.subject}`;
+  renderCurrentQuestion();
+}
+
+function renderCurrentQuestion() {
+  const q = quizState.questions[quizState.current];
+  const total = quizState.questions.length;
+  const idx = quizState.current;
+
+  document.getElementById('quiz-q-counter').textContent = `${idx+1} / ${total}`;
+  document.getElementById('quiz-prog-fill').style.width = `${((idx)/total)*100}%`;
+
+  const letters = ['A','B','C','D'];
+  document.getElementById('quiz-q-area').innerHTML = `
+    <div class="quiz-q-card">
+      <h3>${idx+1}. ${q.question}</h3>
+      <div class="quiz-choices">
+        ${q.choices.map((c,i) => `
+          <button class="choice-btn" onclick="selectAnswer(${i})" id="choice-${i}">
+            <span class="choice-letter">${letters[i]}</span>
+            ${c.replace(/^[A-D]\.\s*/,'')}
+          </button>
+        `).join('')}
+      </div>
+      <div id="quiz-explanation" style="display:none;" class="quiz-explanation"></div>
+    </div>
+  `;
+
+  document.getElementById('quiz-next-btn').style.display = 'none';
+  document.getElementById('quiz-finish-btn').style.display = 'none';
+}
+
+function selectAnswer(idx) {
+  const q = quizState.questions[quizState.current];
+  const isCorrect = idx === q.correct;
+  quizState.answers.push({ chosen: idx, correct: q.correct, isCorrect });
+  if(isCorrect) quizState.score++;
+
+  // Disable all buttons and show result
+  document.querySelectorAll('.choice-btn').forEach((btn, i) => {
+    btn.disabled = true;
+    if(i === q.correct) btn.classList.add('correct');
+    else if(i === idx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  // Show explanation
+  const exp = document.getElementById('quiz-explanation');
+  exp.style.display = 'block';
+  exp.textContent = q.explanation;
+
+  const isLast = quizState.current === quizState.questions.length - 1;
+  document.getElementById('quiz-next-btn').style.display = isLast ? 'none' : 'block';
+  document.getElementById('quiz-finish-btn').style.display = isLast ? 'block' : 'none';
+}
+
+function nextQuestion() {
+  quizState.current++;
+  renderCurrentQuestion();
+}
+
+function finishQuiz() {
+  document.getElementById('quiz-play').style.display = 'none';
+  document.getElementById('quiz-results').style.display = 'block';
+  const score = quizState.score;
+  const total = quizState.questions.length;
+  const pct = Math.round((score/total)*100);
+  const msg = pct >= 80 ? '🏆 Excellent travail !' : pct >= 60 ? '👍 Bon résultat, continuez !' : '📚 Révisez encore, vous pouvez y arriver !';
+
+  document.getElementById('quiz-results').innerHTML = `
+    <div class="quiz-score-card">
+      <span class="score-ring">${score}/${total}</span>
+      <span class="score-label">${pct}% de bonnes réponses</span>
+      <div class="score-msg">${msg}</div>
+      <div style="margin-top:2rem;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <button class="btn btn-gold" onclick="retryQuiz()">🔄 Nouveau quiz</button>
+        <button class="btn btn-outline" onclick="reviewAnswers()">📋 Revoir les réponses</button>
+        <button class="btn btn-outline" onclick="showPage('fiches')">📚 Fiche de révision</button>
+      </div>
+    </div>
+  `;
+
+  // Save to progress
+  progressData.quizzes.push({
+    date: new Date().toLocaleDateString('fr-MA'),
+    subject: quizState.subject,
+    score, total, pct,
+    difficulty: quizState.difficulty
+  });
+  if(!progressData.quizScores[quizState.subject]) progressData.quizScores[quizState.subject] = [];
+  progressData.quizScores[quizState.subject].push(pct);
+  saveProgress();
+}
+
+function retryQuiz() {
+  document.getElementById('quiz-setup').style.display = 'block';
+  document.getElementById('quiz-results').style.display = 'none';
+}
+
+function reviewAnswers() {
+  const qs = quizState.questions;
+  const ans = quizState.answers;
+  const letters = ['A','B','C','D'];
+  let html = '<div style="margin-top:1rem;">';
+  qs.forEach((q,i) => {
+    const a = ans[i];
+    const ok = a?.isCorrect;
+    html += `
+      <div style="margin-bottom:1.2rem;padding:1.2rem;background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);">
+        <div style="font-weight:600;color:var(--cream);margin-bottom:0.6rem;">${i+1}. ${q.question}</div>
+        <div style="font-size:0.85rem;color:${ok?'#6ec994':'#fca5a5'};">
+          ${ok?'✓':'✗'} Votre réponse: ${a ? q.choices[a.chosen] : 'Non répondu'}
+        </div>
+        ${!ok ? `<div style="font-size:0.85rem;color:#6ec994;margin-top:0.3rem;">✓ Bonne réponse: ${q.choices[q.correct]}</div>` : ''}
+        <div style="margin-top:0.5rem;font-size:0.82rem;color:var(--text-muted);">${q.explanation}</div>
+      </div>
+    `;
+  });
+  html += `<button class="btn btn-gold" onclick="retryQuiz()" style="margin-top:1rem;">🔄 Nouveau quiz</button></div>`;
+  document.getElementById('quiz-results').innerHTML = html;
+}
+
+// ══════════════════════════════════════════
+// FICHES PAGE
+// ══════════════════════════════════════════
+function initFichesPage() {
+  const sel = document.getElementById('fiche-matiere');
+  SUBJECTS.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s.name;
+    opt.textContent = `${s.icon} ${s.name}`;
+    sel.appendChild(opt);
+  });
+}
+
+function updateTopicList() {
+  const subject = document.getElementById('fiche-matiere').value;
+  const list = document.getElementById('topic-list');
+  if(!subject) { list.innerHTML = '<li style="color:var(--text-muted);font-size:0.82rem;padding:0.5rem;">← Sélectionnez une matière</li>'; return; }
+  const topics = TOPICS[subject] || [];
+  list.innerHTML = topics.map((t,i) => {
+    const done = progressData.topicsRead.includes(subject+':'+i);
+    return `<li class="topic-item" onclick="loadFiche('${subject}', ${i})">${t}${done?'<span class="topic-check">✓</span>':''}</li>`;
+  }).join('');
+}
+
+let ficheLoading = false;
+async function loadFiche(subject, topicIdx) {
+  if(ficheLoading) return;
+  ficheLoading = true;
+
+  // Update sidebar active state
+  document.querySelectorAll('.topic-item').forEach((el,i) => el.classList.toggle('active', i===topicIdx));
+
+  const topic = TOPICS[subject]?.[topicIdx] || '';
+  const content = document.getElementById('fiche-content');
+  content.innerHTML = `
+    <div class="loading">
+      <div class="dot-loader"><span></span><span></span><span></span></div>
+      <p>Génération de la fiche en cours...</p>
+    </div>
+  `;
+
+  try {
+    const prompt = `Tu es un professeur marocain expert en 1Bac. Génère une fiche de révision complète et structurée pour:
+Matière: ${subject}
+Chapitre/Sujet: ${topic}
+Programme: 1ère Année Baccalauréat Maroc (examen régional)
+
+Réponds en HTML en utilisant ces balises uniquement: h2, h3, p, ul, li, div class="highlight-box"
+La fiche doit contenir:
+- Un titre h2 avec le nom du sujet
+- Points clés et notions fondamentales
+- Exemples et citations importantes (pour le français)
+- Des encadrés highlight-box pour les points essentiels à retenir
+- Conseils pour l'examen régional
+
+Réponds UNIQUEMENT avec le HTML, sans balises html/head/body.
+La langue doit correspondre à la matière (arabe pour Arabe et Islamique, français pour le reste).`;
+
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1500,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content.map(c => c.text||'').join('');
+    content.innerHTML = text;
+
+    // Save topic as read
+    const key = subject+':'+topicIdx;
+    if(!progressData.topicsRead.includes(key)) {
+      progressData.topicsRead.push(key);
+      saveProgress();
+      updateTopicList();
+    }
+
+    // Add quiz button at bottom
+    content.innerHTML += `
+      <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--card-border);">
+        <button class="btn btn-gold btn-sm" onclick="launchQuizFor('${subject}')">🎯 Faire un quiz sur ce chapitre</button>
+      </div>
+    `;
+  } catch(e) {
+    content.innerHTML = `<div class="fiche-empty"><div>⚠️</div><p>Erreur lors de la génération. Veuillez réessayer.</p><button class="btn btn-gold btn-sm" onclick="loadFiche('${subject}',${topicIdx})" style="margin-top:1rem;">Réessayer</button></div>`;
+  }
+  ficheLoading = false;
+}
+
+// ══════════════════════════════════════════
+// PROGRESS PAGE
+// ══════════════════════════════════════════
+function renderProgress() {
+  const quizzes = progressData.quizzes;
+  const topics = progressData.topicsRead;
+  const scores = progressData.quizScores;
+
+  document.getElementById('prog-overview').innerHTML = `
+    <div class="progress-stat"><div class="num">${quizzes.length}</div><div class="lbl">Quiz effectués</div></div>
+    <div class="progress-stat"><div class="num">${topics.length}</div><div class="lbl">Fiches lues</div></div>
+    <div class="progress-stat"><div class="num">${quizzes.length ? Math.round(quizzes.reduce((s,q)=>s+q.pct,0)/quizzes.length) : 0}%</div><div class="lbl">Score moyen</div></div>
+    <div class="progress-stat"><div class="num">${Object.keys(scores).length}</div><div class="lbl">Matières révisées</div></div>
+  `;
+
+  // Subject progress bars
+  const subjDiv = document.getElementById('prog-subjects');
+  if(Object.keys(scores).length === 0) {
+    subjDiv.innerHTML = '<p style="color:var(--text-muted);font-size:0.9rem;">Faites des quiz pour voir votre progression ici.</p>';
+  } else {
+    subjDiv.innerHTML = Object.entries(scores).map(([subj, sc]) => {
+      const avg = Math.round(sc.reduce((a,b)=>a+b,0)/sc.length);
+      return `
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-row"><span class="subj">${subj}</span><span class="pct">${avg}% (${sc.length} quiz)</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:${avg}%"></div></div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Quiz history
+  const histDiv = document.getElementById('quiz-history-list');
+  if(quizzes.length === 0) {
+    histDiv.innerHTML = '<p style="color:var(--text-muted);font-size:0.9rem;">Aucun quiz effectué pour l\'instant.</p>';
+  } else {
+    histDiv.innerHTML = `<table>
+      <thead><tr><th>Date</th><th>Matière</th><th>Score</th><th>Difficulté</th><th>%</th></tr></thead>
+      <tbody>
+        ${[...quizzes].reverse().slice(0,20).map(q => `
+          <tr>
+            <td>${q.date}</td>
+            <td>${q.subject}</td>
+            <td>${q.score}/${q.total}</td>
+            <td>${q.difficulty}</td>
+            <td style="color:${q.pct>=70?'#6ec994':q.pct>=50?'var(--gold)':'#fca5a5'}">${q.pct}%</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>`;
+  }
+}
+
+function resetProgress() {
+  if(confirm('Êtes-vous sûr de vouloir réinitialiser toute votre progression ?')) {
+    progressData = { quizzes: [], topicsRead: [], quizScores: {} };
+    saveProgress();
+    renderProgress();
+    updateTopicList();
+  }
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+initHome();
+initExamFilters();
+initQuizSubjectButtons();
+initFichesPage();
+applyFilters();
+</script>
+</body>
+</html>
